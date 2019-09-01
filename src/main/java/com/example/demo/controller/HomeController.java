@@ -13,6 +13,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -91,14 +92,9 @@ public class HomeController {
 
     // user page
     @RequestMapping(value = "/user", method = RequestMethod.GET)
-    public ModelAndView user(Model model, @ModelAttribute("user") User userAttribute) {
+    public ModelAndView user(Model model, @ModelAttribute("user") User user) {
 
-		User user = new User();
-    	if (userAttribute != null) {
-    		user.setFirstname(userAttribute.getFirstname());;
-    		user.setLastname(userAttribute.getLastname());;
-    	}
-        model.addAttribute("user", new User());
+        model.addAttribute("user", user);
         return new ModelAndView("user", "command", user);
     }
 
@@ -106,16 +102,20 @@ public class HomeController {
     public ModelAndView saveOrUpdateUser(@RequestParam String action, @ModelAttribute("userForm") @Validated User user,
                                    BindingResult result, Model model, final RedirectAttributes redirectAttributes) {
     	
-
 		try {
     	    if (action.equals("create")) {
-    	    	userService.createUser(user);
+    	    	if (!userService.createUser(user)) {
+    	    		redirectAttributes.addFlashAttribute("msg", "User already exist!");
+    	    	} else {
+    	    		redirectAttributes.addFlashAttribute("user", user);
+                    redirectAttributes.addFlashAttribute("msg", "User created successfully !");
+    	    	}
     	    } else {
     	    	 
                 User userFound = userService.getUser(user);
                  
                 if (userFound!=null) {
-                    System.out.println("User found !");
+                	redirectAttributes.addFlashAttribute("msg", "User found in database");
                     redirectAttributes.addFlashAttribute("user", user);
                 }
     	    }

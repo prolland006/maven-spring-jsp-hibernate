@@ -8,6 +8,12 @@
     <jsp:body>
         <div class="container">
             <form:form class="form-horizontal" method="post" action="/demo/postuser">
+            	
+    	        <c:if test="${not empty msg}">
+		    		<div>
+						<strong>${msg}</strong>
+		    		</div>
+				</c:if>
 
                 <spring:bind path="firstname">
                     <div class="form-group ${status.error ? 'has-error' : ''}">
