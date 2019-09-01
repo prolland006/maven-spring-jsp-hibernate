@@ -1,0 +1,83 @@
+
+.makble_button_large_green {
+    padding: 13px 0;
+    font-size: 20px;
+    line-height: 20px;
+}
+
+.makble_button_large_green {
+    background: #e76700;
+    color: #FFF !important;
+    text-align: center;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    text-transform: uppercase;
+    font-weight: 600;
+    border: 1px solid #3f9d00;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    background-image: -moz-linear-gradient(bottom, #489801, #71d000);
+    background-image: -ms-linear-gradient(bottom, #489801, #71d000);
+    background-image: -o-linear-gradient(bottom, #489801, #71d000);
+    background-image: linear-gradient(to top, #489801, #71d000);
+    padding: 5px 10px;
+    display: inline-block;}
+
+.makble_button_large_green:hover {
+    color: #FFF !important;
+    background-image: -moz-linear-gradient(bottom, #71d000, #489801);
+    background-image: -ms-linear-gradient(bottom, #71d000, #489801);
+    background-image: -o-linear-gradient(bottom, #71d000, #489801);
+    background-image: linear-gradient(to top, #71d000, #489801);
+}
+
+#textbox-style {
+    width: auto!important;
+    height: auto!important;
+    margin: 0 auto;
+    padding: 20px!important;
+    border: solid rgba(255, 255, 255, .5)!important;
+    border-width: 1px 0!important;
+    overflow: hidden;
+    text-align: left;
+    font-size: 13px!important;
+    line-height: 16px!important;
+    background: transparent!important;
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, .4)
+}
+
+#textbox-style .textbox-inner-style-wrap .textbox-inner-style-img {
+    margin: 0!important;
+    display: block;
+    float: left;
+}
+
+#textbox-style .textbox-inner-style-wrap .textbox-inner-style-text,
+#textbox-style .textbox-inner-style-poweredby {
+    display: block!important;
+    float: none!important;
+    width: auto!important;
+    height: auto!important;
+    margin-left: 145px!important;
+    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif!important;
+    color: white!important;
+}
+
+#textbox-style .textbox-inner-style-wrap .textbox-inner-style-text {
+    padding-top: 0!important;
+    color: rgba(255, 255, 255, .8)
+}
+
+#textbox-style .textbox-inner-style-poweredby {
+    text-align: left!important;
+    color: inherit!important;
+    margin-top: 10px!important;
+}
+
+#textbox-style {
+    width: 330px!important;
+    margin: 0 auto;
+    padding: 15px!important
+}
