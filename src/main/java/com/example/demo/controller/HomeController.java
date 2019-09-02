@@ -1,21 +1,17 @@
 package com.example.demo.controller;
 
-import org.hibernate.Criteria;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+
+import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,6 +32,8 @@ public class HomeController {
 	
 	@Autowired
 	UserService userService;
+	
+	private static final Logger logger = Logger.getLogger(HomeController.class);
 
 	@RequestMapping(value = "/", method = RequestMethod.GET )
 	public ModelAndView hello(Model model){
@@ -99,9 +97,24 @@ public class HomeController {
     }
 
     @RequestMapping(value = "/postuser", method = RequestMethod.POST)
-    public ModelAndView saveOrUpdateUser(@RequestParam String action, @ModelAttribute("userForm") @Validated User user,
-                                   BindingResult result, Model model, final RedirectAttributes redirectAttributes) {
+    public ModelAndView saveOrUpdateUser(
+    		@RequestParam String action, 
+    		@RequestParam(value="firstname", required=true) String firstname,
+    		@RequestParam(value="lastname", required=true) String lastname,
+    		@RequestParam(value="age", required=true) int age,
+    		@RequestParam(value="address", required=false, defaultValue = "") String address,
+    		@RequestParam(value="pays", required=false, defaultValue = "france") String pays,
+    		final RedirectAttributes redirectAttributes) {
     	
+    	User user = new User();
+    	user.setFirstname(firstname);
+    	user.setLastname(lastname);
+    	user.setAge(age);
+    	user.setPays(pays);
+    	user.setAddress(address);
+    	
+		logger.info("saveOrUpdateUser - " + user.toString());
+
 		try {
     	    if (action.equals("create")) {
     	    	if (!userService.createUser(user)) {
@@ -116,19 +129,22 @@ public class HomeController {
                  
                 if (userFound!=null) {
                 	redirectAttributes.addFlashAttribute("msg", "User found in database");
-                    redirectAttributes.addFlashAttribute("user", user);
+                    redirectAttributes.addFlashAttribute("user", userFound);
                 }
     	    }
-    	 
+		} catch (ConstraintViolationException e) {
+			StringBuffer msg = new StringBuffer();
+            for (ConstraintViolation<?> con : e.getConstraintViolations()) {
+            	msg.append(con.getMessage());
+            	msg.append(". ");
+            }
+			redirectAttributes.addFlashAttribute("msg", msg);
+            redirectAttributes.addFlashAttribute("user", user);
     	} catch (Exception ex) {
     	    ex.printStackTrace();
     	}
 
-        if (result.hasErrors()) {
-            return new ModelAndView("redirect:/user/");
-        } else {
-            return new ModelAndView("redirect:/user/");
-        }
+        return new ModelAndView("redirect:/user/");
 
     }	
 }
