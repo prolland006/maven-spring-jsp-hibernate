@@ -35,60 +35,12 @@ public class HomeController {
 	
 	private static final Logger logger = Logger.getLogger(HomeController.class);
 
-	@RequestMapping(value = "/", method = RequestMethod.GET )
-	public ModelAndView hello(Model model){
-		model.addAttribute("title", "Spring Boot - Hello World Example Jsp");
-		return new ModelAndView("index");
-	}
-	
-	@RequestMapping(value="/sayHello", method = RequestMethod.GET)
-    public String sayHello() {
-    	final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-    	        .configure() // configures settings from hibernate.cfg.xml
-    	        .build();
-    	try {
-    		User user = new User();
-    	    user.setFirstname("firstname");
-    	    user.setLastname("lastname");
-    	    
-    	    SessionFactory sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
-    	    Session session = sessionFactory.openSession();
-    	    session.beginTransaction();
-    	 
-    	    session.save(user);
-    	 
-    	    session.getTransaction().commit();
-    	    session.close();
-    	} catch (Exception ex) {
-    	    StandardServiceRegistryBuilder.destroy(registry);
-    	    ex.printStackTrace();
-    	}
-        return "hello world";
-    }
-
-    @RequestMapping("/ajax")
-    public ModelAndView helloAjaxTest() {
-        return new ModelAndView("ajax", "message", "Crunchify Spring MVC with Ajax and JQuery Demo..");
-    }
-
-    @RequestMapping(value = "/ajaxquery", method = RequestMethod.GET)
-    public @ResponseBody String getGreeting(@RequestParam String firstname,@RequestParam String lastname) {
-    	User user = new User();
-	    user.setFirstname(firstname);
-	    user.setLastname(lastname);
-
-        ObjectMapper mapper =new ObjectMapper();
-        String jsonInString = null;
-        try {
-            jsonInString = mapper.writeValueAsString(user);
-        } catch (JsonProcessingException exc) {
-            exc.printStackTrace();
-        }
-
-        return jsonInString;
-    }
-
-    // user page
+    /**
+     * Display the user page : user.jsp
+     * @param model
+     * @param user
+     * @return
+     */
     @RequestMapping(value = "/user", method = RequestMethod.GET)
     public ModelAndView user(Model model, @ModelAttribute("user") User user) {
 
@@ -96,8 +48,19 @@ public class HomeController {
         return new ModelAndView("user", "command", user);
     }
 
+    /**
+     * Create a user if not exist or find a user. If the user exist send a flash attribute
+     * @param action
+     * @param firstname
+     * @param lastname
+     * @param age
+     * @param address
+     * @param pays
+     * @param redirectAttributes
+     * @return
+     */
     @RequestMapping(value = "/postuser", method = RequestMethod.POST)
-    public ModelAndView saveOrUpdateUser(
+    public ModelAndView postUser(
     		@RequestParam String action, 
     		@RequestParam(value="firstname", required=true) String firstname,
     		@RequestParam(value="lastname", required=true) String lastname,
@@ -116,6 +79,8 @@ public class HomeController {
 		logger.info("saveOrUpdateUser - " + user.toString());
 
 		try {
+			
+			// create the user
     	    if (action.equals("create")) {
     	    	if (!userService.createUser(user)) {
     	    		redirectAttributes.addFlashAttribute("msg", "User already exist!");
@@ -123,6 +88,8 @@ public class HomeController {
     	    		redirectAttributes.addFlashAttribute("user", user);
                     redirectAttributes.addFlashAttribute("msg", "User created successfully !");
     	    	}
+    	    	
+    	    // find the user
     	    } else {
     	    	 
                 User userFound = userService.getUser(user);
@@ -132,7 +99,10 @@ public class HomeController {
                     redirectAttributes.addFlashAttribute("user", userFound);
                 }
     	    }
+    	    
 		} catch (ConstraintViolationException e) {
+			
+			// check for mandatory fields, if mandatory fields display messages on user page
 			StringBuffer msg = new StringBuffer();
             for (ConstraintViolation<?> con : e.getConstraintViolations()) {
             	msg.append(con.getMessage());
@@ -140,6 +110,7 @@ public class HomeController {
             }
 			redirectAttributes.addFlashAttribute("msg", msg);
             redirectAttributes.addFlashAttribute("user", user);
+            
     	} catch (Exception ex) {
     	    ex.printStackTrace();
     	}
