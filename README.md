@@ -17,3 +17,6 @@ Requirements:
 
 ## start web server
 mvn spring-boot:run
+
+## on the web browser 
+http://localhost:8080/demo/user
