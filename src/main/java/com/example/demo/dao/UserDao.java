@@ -1,5 +1,7 @@
 package com.example.demo.dao;
 
+import java.util.List;
+
 import com.example.demo.entities.User;
 
 public interface UserDao {
@@ -18,4 +20,11 @@ public interface UserDao {
 	 * @return the user found or null if not found
 	 */
 	public User getUser(User user) throws Exception;
+	
+	/**
+	 * get all users
+	 * @return user List
+	 * @throws Exception
+	 */
+	public List<User> getUsers() throws Exception;
 }

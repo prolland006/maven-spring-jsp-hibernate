@@ -15,8 +15,17 @@ Requirements:
 - only adults ( age > 18 years)  and that live in France can create an account!
 
 
-## start web server
+There are two fronts one in Jsp and the other in React. Bootstrap is inscluded in this project.
+
+## start spring web server
 mvn spring-boot:run
 
-## on the web browser 
+## on the web browser in Jsp 
 http://localhost:8080/demo/user
+
+## react.js front end server
+yarn start (to start the front in react)
+http://localhost:3000
+I created a React front end using this documentation
+https://www.javaguides.net/2020/07/react-js-spring-boot-rest-api-example-tutorial.html
+

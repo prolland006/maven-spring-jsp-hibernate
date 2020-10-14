@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
@@ -12,6 +14,8 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,6 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.example.demo.entities.User;
 import com.example.demo.service.UserService;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @SpringBootApplication
 public class HomeController {
@@ -46,6 +51,17 @@ public class HomeController {
 
         model.addAttribute("user", user);
         return new ModelAndView("user", "command", user);
+    }
+    
+    @GetMapping("users")
+    public List < User > getUsers() {
+        try {
+			return this.userService.getUsers();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        return null;
     }
 
     /**

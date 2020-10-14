@@ -1,5 +1,12 @@
 package com.example.demo.dao;
 
+import java.util.List;
+
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -34,6 +41,33 @@ public class UserDaoImpl implements UserDao  {
 	    session.getTransaction().commit();
 	    session.close();
 	    return true;
+	}
+	
+	public List<User> getUsers() throws Exception {
+		List<User> users = null;
+		final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+    	        .configure() // configures settings from hibernate.cfg.xml
+    	        .build();
+    	try {
+    	    
+    	    SessionFactory sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
+    	    Session session = sessionFactory.openSession();
+    	    
+    	    CriteriaBuilder cb = session.getCriteriaBuilder();
+    	    CriteriaQuery<User> cq = cb.createQuery(User.class);
+    	    Root<User> rootEntry = cq.from(User.class);
+    	    CriteriaQuery<User> all = cq.select(rootEntry);
+    	 
+    	    TypedQuery<User> allQuery = session.createQuery(all);
+    	    users = allQuery.getResultList();
+    	    
+    	    session.close();
+    	} catch (Exception ex) {
+    	    StandardServiceRegistryBuilder.destroy(registry);
+    	    ex.printStackTrace();
+    	    throw ex;
+    	}
+    	return users;		
 	}
 	
 	/**

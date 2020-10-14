@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,4 +37,12 @@ public class UserService {
     	return userDao.getUser(user);
 	}
 	
+	/**
+	 * get all users
+	 * @return user List
+	 * @throws Exception
+	 */
+	public List<User> getUsers() throws Exception {
+		return userDao.getUsers();
+	}
 }
