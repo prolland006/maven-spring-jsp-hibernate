@@ -1,21 +1,9 @@
 import React from 'react';
-import UserService from '../services/UserService';
 
 class UserComponent extends React.Component {
 
-    constructor(props){
-        super(props)
-        this.state = {
-            users:[]
-        }
-    }
-
     componentDidMount(){
-        UserService.getUsers().then((response) => {
-        	console.log('reponse:');
-        	console.log(response.data);
-            this.setState({ users: response.data})
-        });
+        this.props.getUsers();
     }
 
     render (){
@@ -35,7 +23,7 @@ class UserComponent extends React.Component {
                     </thead>
                     <tbody>
                         {
-                            this.state.users.map(
+                            this.props.users ? this.props.users.map(
                                 user => 
                                 <tr key = {user.id}>
                                      <td> {user.id}</td>   
@@ -43,7 +31,7 @@ class UserComponent extends React.Component {
                                      <td> {user.lastname}</td>   
                                      <td> {user.email}</td>   
                                 </tr>
-                            )
+                            ) : ''
                         }
 
                     </tbody>

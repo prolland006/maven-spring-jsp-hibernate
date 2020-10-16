@@ -1,14 +1,23 @@
 import React from 'react';
-import logo from './logo.svg';
+import { connect } from 'react-redux';
+import { getUsers, getUsersReceived } from './redux';
 import './App.css';
 import UserComponent from './components/UserComponent';
 
 function App() {
   return (
     <div className="App">
-        <UserComponent />
+        <UserComponent getUsers={getUsers} />
     </div>
   );
 }
 
-export default App;
+const mapStateToProps = state => state.users;
+const mapDispatchToProps = {getUsers};
+
+const AppContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(UserComponent);
+
+export default AppContainer;
