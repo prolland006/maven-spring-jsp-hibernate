@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getUsers, getUsersReceived } from './redux';
+import { getUsers } from './redux';
 import './App.css';
 import UserComponent from './components/UserComponent';
 

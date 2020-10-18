@@ -29,3 +29,11 @@ http://localhost:3000
 I created a React front end using this documentation
 https://www.javaguides.net/2020/07/react-js-spring-boot-rest-api-example-tutorial.html
 
+## a new typescript react front end
+http://pigne.org/teaching/webdev1/lecture/ReduxIntroduction
+
+https://www.freecodecamp.org/news/how-to-use-redux-in-your-react-typescript-app/
+
+https://medium.com/@peatiscoding/typescripts-with-redux-redux-thunk-recipe-fcce4ffca405
+
+https://openclassrooms.com/fr/courses/5511091-organisez-votre-application-avec-la-logique-redux
