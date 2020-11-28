@@ -113,6 +113,8 @@ public class HomeController {
                 if (userFound!=null) {
                 	redirectAttributes.addFlashAttribute("msg", "User found in database");
                     redirectAttributes.addFlashAttribute("user", userFound);
+                } else {
+                	redirectAttributes.addFlashAttribute("msg", "User not found !");
                 }
     	    }
     	    
