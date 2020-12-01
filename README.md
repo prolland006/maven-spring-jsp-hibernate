@@ -4,7 +4,7 @@ Create 2 REST services: one that allows to register a user and the other one tha
 
 There are three frontend connected to spring server : one in Jsp, one in react.js and one in react.js with typescript and material UI
 
-![react redux typescript](https://github.com/prolland006/maven-spring-jsp-hibernate/pic/screen.jpg)
+![react redux typescript](https://github.com/prolland006/maven-spring-jsp-hibernate/tree/master/pic/screen.jpg)
 
 ## User documentation
 - define a user (what are the fields needed). We should have mandatory and optional fields!
