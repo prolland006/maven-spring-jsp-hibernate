@@ -12,10 +12,12 @@ type GlobalState = {
 }
 
 type UserState = {
-	users: IUser[]
+  user: IUser,
+  users: IUser[],
+  feedback: FeedbackCreateUser.FeedbackMessage,
 }
 
-type UserAction = {
+type BaseAction = {
   type: string
-  users: IUser[]
+  payload: any
 }
