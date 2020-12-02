@@ -1,4 +1,4 @@
-import { FeedbackType } from "../model";
+import { CreateUserFeedbackType } from "../model";
 import * as actionTypes from "./actionTypes"
 
 const initialState: UserState = {
@@ -12,7 +12,7 @@ const initialState: UserState = {
   },
   users: [],
   feedback: {
-    id: FeedbackType.UNDEFINED,
+    id: CreateUserFeedbackType.UNDEFINED,
     message: 'undefined',
   },
 }
@@ -22,13 +22,44 @@ const reducer = (
   action: BaseAction
 ): UserState => {
 	switch (action.type) {
-      case actionTypes.ALL_USERS:
-        return {...state};
       case actionTypes.ALL_USERS_RECEIVED:
-        return {...state, users: action.payload};
+        return {
+          ...state, 
+          users: action.payload.users, 
+          feedback:  {
+            id: action.payload.id,
+            message: action.payload.message,
+          }
+        };
+      case actionTypes.GET_USER_OK:
+        return {
+          ...state, 
+          user: {
+            ...action.payload.users[0]
+          },
+          feedback:  {
+            id: action.payload.id,
+            message: action.payload.message,
+          }
+        };
+      case actionTypes.GET_USER_FAILED:
+        return {
+          ...state, 
+          feedback:  {
+            id: action.payload.id,
+            message: action.payload.message,
+          }
+        };
       case actionTypes.CREATE_USER_OK:
       case actionTypes.CREATE_USER_FAILED:
         return {...state, feedback: action.payload};
+      case actionTypes.UPDATE_USER:
+        return {
+          ...state, 
+          user: {
+            ...action.payload
+          }
+        }
       default:
   }
   return {...state};

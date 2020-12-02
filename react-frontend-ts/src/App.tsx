@@ -1,25 +1,15 @@
 import React from 'react';
-import { getUsersAction, createUserAction } from './store/actionCreators'
+import { getUsersAction, createUserAction, displayUserAction } from './store/actionCreators'
 import './App.css';
 import { connect } from 'react-redux';
 import {Dispatch} from 'redux'
 import Button from '@material-ui/core/Button';
 import { TextField } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
-import { FeedbackMessage, FeedbackType } from './model';
+import { FeedbackMessage, CreateUserFeedbackType } from './model';
+import { UPDATE_USER } from './store/actionTypes';
 
 export class App extends React.Component<UserComponentType, any> {
-
-  public state = {
-    user: {
-      id: -1,
-      firstname: '',
-      lastname: '',
-      address: '',
-      email: '',
-      age: 0,
-    }
-  }
 
   constructor(props: UserComponentType) {
     super(props);
@@ -27,6 +17,7 @@ export class App extends React.Component<UserComponentType, any> {
     // Cette liaison est nécéssaire afin de permettre
     // l'utilisation de `this` dans la fonction de rappel.
     this.handleCreateUser = this.handleCreateUser.bind(this);
+    this.handleDisplayUser = this.handleDisplayUser.bind(this);
   }
 
   public componentDidMount() {
@@ -34,55 +25,44 @@ export class App extends React.Component<UserComponentType, any> {
   }
 
   public componentDidUpdate() {
-    console.log('component did update');
-    console.log(this.props);
   }
 
+  handleDisplayUser() {
+    this.props.displayUser(this.props.user);
+  }
 
   handleCreateUser() {
-    console.log('create user');
-    console.log(this.state);
-    this.props.createUser(this.state.user);
+    this.props.createUser(this.props.user);
   }
 
   handleChangeFirstname = (e: any) => {
-    this.setState({
-      user: {
-        ...this.state.user,
+    this.props.updateUser({
+        ...this.props.user,
         firstname: e.target.value,
-      }
     });
   }
   handleChangeLastname = (e: any) => {
-    this.setState({
-      user: {
-        ...this.state.user,
+    this.props.updateUser({
+      ...this.props.user,
         lastname: e.target.value
-      }
     });
   }
   handleChangeAge = (e: any) => {
-    this.setState({
-      user: {
-        ...this.state.user,
+    this.props.updateUser({
+      ...this.props.user,
         age: e.target.value
-      }
     });
   }
   handleChangeAddress = (e: any) => {
-    this.setState({
-      user: {
-        ...this.state.user,
+    this.props.updateUser({
+      ...this.props.user,
         address: e.target.value
-      }
     });
   }
 
   getAlertMessage = (feedback: FeedbackMessage) => {
-    console.log('getAlertMessage');
-    console.log(feedback);
     switch (feedback.id) {
-      case FeedbackType.USER_CREATED_SUCCESSFULLY :
+      case CreateUserFeedbackType.USER_CREATED_SUCCESSFULLY :
         return (
         <div>
           <Alert severity="info">
@@ -90,7 +70,7 @@ export class App extends React.Component<UserComponentType, any> {
             {feedback.message} — <strong>check it out!</strong>
           </Alert>
         </div>)
-      case FeedbackType.USER_ALREADY_EXIST :
+      case CreateUserFeedbackType.USER_ALREADY_EXIST :
         return (
         <div>
           <Alert severity="info">
@@ -98,7 +78,7 @@ export class App extends React.Component<UserComponentType, any> {
             {feedback.message} — <strong>check it out!</strong>
           </Alert>
         </div>)
-        case FeedbackType.CONSTRAINT_VIOLATION :
+        case CreateUserFeedbackType.CONSTRAINT_VIOLATION :
           return (
           <div>
             <Alert severity="warning">
@@ -126,6 +106,7 @@ export class App extends React.Component<UserComponentType, any> {
                     <TextField 
                       id="standard-basic" 
                       label="firstname" 
+                      value={this.props.user.firstname || ''}
                       onChange={this.handleChangeFirstname}
                     />
                   </div>
@@ -133,6 +114,7 @@ export class App extends React.Component<UserComponentType, any> {
                     <TextField 
                       id="standard-basic" 
                       label="lastname"
+                      value={this.props.user.lastname || ''}
                       onChange={this.handleChangeLastname}
                     />
                   </div>
@@ -140,6 +122,7 @@ export class App extends React.Component<UserComponentType, any> {
                     <TextField 
                       id="standard-basic" 
                       label="address" 
+                      value={this.props.user.address || ''}
                       onChange={this.handleChangeAddress}
                     />
                   </div>
@@ -147,7 +130,8 @@ export class App extends React.Component<UserComponentType, any> {
                     <TextField 
                       id="standard-basic" 
                       label="age"
-                      onChange={this.handleChangeAge}
+                      value={this.props.user.age}
+                      onChange={this.handleChangeAge || undefined}
                     />
                   </div>
                   { this.getAlertMessage(this.props.feedback) }
@@ -155,7 +139,7 @@ export class App extends React.Component<UserComponentType, any> {
                     <Button variant="contained" color="primary" onClick={this.handleCreateUser}>
                         Create User
                     </Button>
-                    <Button variant="contained" color="primary">
+                    <Button variant="contained" color="primary" onClick={this.handleDisplayUser}>
                         Display User
                     </Button>
                   </div>
@@ -183,7 +167,7 @@ export class App extends React.Component<UserComponentType, any> {
 }
 
 
-const mapStateToProps = (state: GlobalState) => {console.log('dispathc to prop');console.log(state);
+const mapStateToProps = (state: GlobalState) => {
     return state.userState;
 }
 
@@ -191,6 +175,8 @@ const mapDispatchToProps = (dispatch: Dispatch<BaseAction>) => {
   return {
     getUsers: () => getUsersAction(dispatch),
     createUser: (user: IUser) => createUserAction(dispatch, user),
+    displayUser: (user: IUser) => displayUserAction(dispatch, user),
+    updateUser: (user: IUser) => dispatch({type: UPDATE_USER, payload: user}),
   }
 };
 

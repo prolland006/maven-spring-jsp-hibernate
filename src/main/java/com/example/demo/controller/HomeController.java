@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.ConstraintViolation;
@@ -41,22 +42,55 @@ public class HomeController {
 	UserService userService;
 	
 	private static final Logger logger = Logger.getLogger(HomeController.class);
-
-	private class CreateUserResult {
-		public static final int UNDEFINED = -1;
+	
+	private class CreateUserResult extends ErrorResult {
 		public static final int USER_ALREADY_EXIST = 0;
 		public static final int USER_CREATED_SUCCESSFULLY = 1;
 		public static final int CONSTRAINT_VIOLATION = 2;
+		public CreateUserResult() {
+			super();
+		}
+		
+		public CreateUserResult(int id, String message) {
+			super(id, message);
+		}
+	}
+	
+	private class GetUserResult extends ErrorResult {
+		public static final int USER_GET_SUCCESSFULLY = 1;
+		public static final int USER_NOT_FOUND= 2;
+		
+		private List<User> users = null;
+
+		public GetUserResult() {
+			super();
+		}
+		
+		public GetUserResult(int id, String message) {
+			super(id, message);
+		}
+
+		public List<User> getUsers() {
+			return users;
+		}
+
+		public void setUsers(List<User> users) {
+			this.users = users;
+		}
+	}
+
+	private class ErrorResult {
+		public static final int UNDEFINED = -1;
 		public static final int ERROR = 3;
 
 		int id;
 		String message;
 		
-		public CreateUserResult() {
+		public ErrorResult() {
 			this.id = UNDEFINED;
 			this.message = "undefined";
 		}
-		public CreateUserResult(int id, String message) {
+		public ErrorResult(int id, String message) {
 			this.id = id;
 			this.message = message;
 		}
@@ -74,7 +108,7 @@ public class HomeController {
 		}
 		@Override
 		public String toString() {
-			return "CreateUserResult [id=" + id + ", message=" + message + "]";
+			return "ErrorResult [id=" + id + ", message=" + message + "]";
 		}	
 		
 	}
@@ -92,14 +126,20 @@ public class HomeController {
     }
     
     @GetMapping("users")
-    public List < User > getUsers() {
+    public GetUserResult getUsers() {
+    	logger.info("getUsers");
+		GetUserResult result = new GetUserResult();
+		
         try {
-			return this.userService.getUsers();
+        	result.setId(GetUserResult.USER_GET_SUCCESSFULLY);
+    		result.setMessage("Users have been found");
+    		result.setUsers(this.userService.getUsers());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+        	result.setId(GetUserResult.ERROR);
+    		result.setMessage(e.getMessage());
 		}
-        return null;
+        return result;
     }
 
     /**
@@ -173,24 +213,50 @@ public class HomeController {
 
         return new ModelAndView("redirect:/user/");
 
-    }	
-    
+    }
     
     /**
-     * Create a user if not exist or find a user. If the user exist send a flash attribute
-     * @param action
-     * @param firstname
-     * @param lastname
-     * @param age
-     * @param address
-     * @param pays
-     * @param redirectAttributes
-     * @return
-     */
+	 * get a user thks to firstname & lastname   
+	 * @param user
+	 * @return
+	 */
+    @RequestMapping(value = "/getuser", method = RequestMethod.POST)
+    public GetUserResult getUser(@RequestBody User user) {
+    	
+    	logger.info("getUser - " + user.toString());
+		GetUserResult result = new GetUserResult();
+		
+		User userFound;
+		try {
+			userFound = userService.getUser(user);
+	        if (userFound!=null) {
+	        	ArrayList users = new ArrayList();
+	        	users.add(userFound);
+	            result.setId(GetUserResult.USER_GET_SUCCESSFULLY);
+	    		result.setMessage("User has been found");
+	    		result.setUsers(users);
+	        } else {
+	        	result.setId(GetUserResult.USER_NOT_FOUND);
+	    		result.setMessage("User not found !");
+	        }
+		} catch (Exception e) {
+			e.printStackTrace();
+        	result.setId(GetUserResult.ERROR);
+    		result.setMessage(e.getMessage());
+		}
+        
+        return result;
+    }
+    
+	/**
+	 * create a user    
+	 * @param user
+	 * @return
+	 */
     @RequestMapping(value = "/createuser", method = RequestMethod.POST)
     public CreateUserResult createUser(@RequestBody User user) {
     	
-		logger.info("saveOrUpdateUser - " + user.toString());
+		logger.info("createUser - " + user.toString());
 		CreateUserResult result = new CreateUserResult();
 
 		try {
@@ -220,8 +286,6 @@ public class HomeController {
     	    result.setId(CreateUserResult.ERROR);
     	    result.setMessage(ex.getMessage());
     	} 
-
         return result;
-
     }	
 }
