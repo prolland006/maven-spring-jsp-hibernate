@@ -27,4 +27,12 @@ public interface UserDao {
 	 * @throws Exception
 	 */
 	public List<User> getUsers() throws Exception;
+	
+	/**
+	 * find users with the beginning of criteria
+	 * @param user
+	 * @return
+	 * @throws Exception
+	 */
+	public List<User> findUser(User user) throws Exception;
 }

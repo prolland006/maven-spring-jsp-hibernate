@@ -45,4 +45,15 @@ public class UserService {
 	public List<User> getUsers() throws Exception {
 		return userDao.getUsers();
 	}
+	
+	/**
+	 * find users with the beginning of criteria
+	 * @param user
+	 * @return
+	 * @throws Exception
+	 */
+	public List<User> findUser(User user) throws Exception {
+		return userDao.findUser(user);
+	}
 }
+	

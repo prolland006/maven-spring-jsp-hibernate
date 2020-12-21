@@ -20,7 +20,7 @@ export const createUserAction = (dispatch: Dispatch<BaseAction>, user: IUser) =>
 };
 
 export const displayUserAction = (dispatch: Dispatch<BaseAction>, user: IUser) => {
-    UserService.getUser(user).then((response) => {
+    UserService.findUsers(user).then((response) => {
         if (response.data.id !== GetUserFeedbackType.USER_GETTED_SUCCESSFULLY) {
             dispatch({ type: GET_USER_FAILED, payload: response.data });
         } else {

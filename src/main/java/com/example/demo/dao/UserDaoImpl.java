@@ -2,6 +2,7 @@ package com.example.demo.dao;
 
 import java.util.List;
 
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -98,5 +99,60 @@ public class UserDaoImpl implements UserDao  {
     	    throw ex;
     	}
     	return userFound;
+	}
+	
+	/**
+	 * find users with the beginning of criteria
+	 * @param user
+	 * @return
+	 * @throws Exception
+	 */
+	public List<User> findUser(User user) throws Exception {
+		List users = null;
+		final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+    	        .configure() // configures settings from hibernate.cfg.xml
+    	        .build();
+    	try {
+    	    
+    	    SessionFactory sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
+    	    Session session = sessionFactory.openSession();
+    	    StringBuffer sb = new StringBuffer("SELECT u FROM User u WHERE ");
+    	    int paramNb = 1;
+    	    if (user.getFirstname().trim().compareTo("") != 0) {
+                sb.append("upper(u.firstname) LIKE CONCAT('%',?");
+                sb.append(Integer.toString(paramNb));
+                sb.append(",'%')");
+                paramNb++;
+    	    }
+    	    
+    	    if (user.getLastname().trim().compareTo("") != 0) {
+                sb.append("upper(u.lastname) LIKE CONCAT('%',?");
+                sb.append(Integer.toString(paramNb));
+                sb.append(",'%')");
+                paramNb++;
+    	    }
+
+    	    if (user.getAddress().trim().compareTo("") != 0) {
+                sb.append("upper(u.address) LIKE CONCAT('%',?");
+                sb.append(Integer.toString(paramNb));
+                sb.append(",'%')");
+                paramNb++;
+    	    }
+    	    
+    	    if (paramNb == 1) {
+    	    	sb.append("1=1");
+    	    }
+    	    
+            Query query = session.createQuery(sb.toString());
+	        query.setParameter(1, user.getFirstname().toUpperCase());
+	        users = query.getResultList();
+        
+		    session.close();
+		} catch (Exception ex) {
+		    StandardServiceRegistryBuilder.destroy(registry);
+		    ex.printStackTrace();
+		    throw ex;
+		}
+    	return users;
 	}
 }

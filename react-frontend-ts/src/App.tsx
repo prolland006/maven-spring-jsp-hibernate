@@ -4,10 +4,21 @@ import './App.css';
 import { connect } from 'react-redux';
 import {Dispatch} from 'redux'
 import Button from '@material-ui/core/Button';
-import { TextField } from '@material-ui/core';
+import { createStyles, Grid, Paper, TextField, withStyles } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import { FeedbackMessage, CreateUserFeedbackType } from './model';
 import { UPDATE_USER } from './store/actionTypes';
+
+const styles = (theme: any) => createStyles({  
+  root: {
+    flexGrow: 1,
+  },
+  paper: {
+    padding: theme.spacing(2),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  },
+});
 
 export class App extends React.Component<UserComponentType, any> {
 
@@ -98,71 +109,80 @@ export class App extends React.Component<UserComponentType, any> {
   }
 
 	public render() { 
-  		return (
-            <div>
-                <h1 className = "text-center"> Users</h1>
-                <form>
-                  <div>
-                    <TextField 
-                      id="standard-basic" 
-                      label="firstname" 
-                      value={this.props.user.firstname || ''}
-                      onChange={this.handleChangeFirstname}
-                    />
-                  </div>
-                  <div>
-                    <TextField 
-                      id="standard-basic" 
-                      label="lastname"
-                      value={this.props.user.lastname || ''}
-                      onChange={this.handleChangeLastname}
-                    />
-                  </div>
-                  <div>
-                    <TextField 
-                      id="standard-basic" 
-                      label="address" 
-                      value={this.props.user.address || ''}
-                      onChange={this.handleChangeAddress}
-                    />
-                  </div>
-                  <div>
-                    <TextField 
-                      id="standard-basic" 
-                      label="age"
-                      value={this.props.user.age}
-                      onChange={this.handleChangeAge || undefined}
-                    />
-                  </div>
-                  { this.getAlertMessage(this.props.feedback) }
-                  <div>
-                    <Button variant="contained" color="primary" onClick={this.handleCreateUser}>
-                        Create User
-                    </Button>
-                    <Button variant="contained" color="primary" onClick={this.handleDisplayUser}>
-                        Display User
-                    </Button>
-                  </div>
-                </form>
-                <table className = "table table-striped">
-                    <tbody>
-                        {
-                            this.props.users ? this.props.users.map(
-                                user => 
-                                <tr key = {user.id}>
-                                        <td> {user.id}</td>   
-                                        <td> {user.firstname}</td>   
-                                        <td> {user.lastname}</td>   
-                                        <td> {user.email}</td>   
-                                </tr>
-                            ) : ''
-                        }
-
-                    </tbody>
-                </table>
-            </div>
-
-		);
+    const { classes } = this.props;
+    return (
+      <div>
+        <h1 className = "text-center"> Users</h1>
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={6}>
+            <Paper className={classes.paper}>
+              <form>
+                <div>
+                  <TextField 
+                    id="standard-basic" 
+                    label="firstname" 
+                    value={this.props.user.firstname || ''}
+                    onChange={this.handleChangeFirstname}
+                  />
+                </div>
+                <div>
+                  <TextField 
+                    id="standard-basic" 
+                    label="lastname"
+                    value={this.props.user.lastname || ''}
+                    onChange={this.handleChangeLastname}
+                  />
+                </div>
+                <div>
+                  <TextField 
+                    id="standard-basic" 
+                    label="address" 
+                    value={this.props.user.address || ''}
+                    onChange={this.handleChangeAddress}
+                  />
+                </div>
+                <div>
+                  <TextField 
+                    id="standard-basic" 
+                    label="age"
+                    value={this.props.user.age}
+                    onChange={this.handleChangeAge || undefined}
+                  />
+                </div>
+                { this.getAlertMessage(this.props.feedback) }
+                <div>
+                  <Button variant="contained" color="primary" onClick={this.handleCreateUser}>
+                      Create
+                  </Button>
+                  <Button variant="contained" color="primary" onClick={this.handleDisplayUser}>
+                      Search
+                  </Button>
+                </div>
+              </form>
+            </Paper>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Paper className={classes.paper}>
+              <table className = "table table-striped">
+                <tbody>
+                    {
+                      this.props.users ? this.props.users.map(
+                          user => 
+                          <tr key = {user.id}>
+                                  <td> {user.id}</td>   
+                                  <td> {user.firstname}</td>   
+                                  <td> {user.lastname}</td>   
+                                  <td> {user.email}</td>   
+                          </tr>
+                      ) : ''
+                    }
+                </tbody>
+              </table>            
+            </Paper>
+          </Grid>
+        </Grid>
+      </div>
+    );
 	}
 }
 
@@ -180,12 +200,7 @@ const mapDispatchToProps = (dispatch: Dispatch<BaseAction>) => {
   }
 };
 
-export type UserComponentType = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+export type UserComponentType = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & {classes: any};
 
-const AppContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App);
-
-export default AppContainer;
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles as any, { withTheme: true })(App as any));
 
