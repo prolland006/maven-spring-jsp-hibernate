@@ -102,6 +102,35 @@ public class UserDaoImpl implements UserDao  {
 	}
 	
 	/**
+	 * get a user thanks to id
+	 * @param user
+	 * @return the user found or null if not found
+	 */
+	public User getUserId(long id) throws Exception {
+		User userFound = null;
+		final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+    	        .configure() // configures settings from hibernate.cfg.xml
+    	        .build();
+    	try {
+    	    
+    	    SessionFactory sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
+    	    Session session = sessionFactory.openSession();
+    	    
+	    	Criteria criteria = session.createCriteria(User.class);
+            criteria.add(Restrictions.eq("id", id));
+             
+            userFound = (User) criteria.uniqueResult();
+                 
+    	    session.close();
+    	} catch (Exception ex) {
+    	    StandardServiceRegistryBuilder.destroy(registry);
+    	    ex.printStackTrace();
+    	    throw ex;
+    	}
+    	return userFound;
+	}
+	
+	/**
 	 * find users with the beginning of criteria
 	 * @param user
 	 * @return

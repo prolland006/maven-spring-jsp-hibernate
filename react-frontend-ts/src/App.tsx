@@ -1,5 +1,5 @@
 import React from 'react';
-import { getUsersAction, createUserAction, displayUserAction } from './store/actionCreators'
+import { getUsersAction, createUserAction, displayUserAction, searchUserAction} from './store/actionCreators'
 import './App.css';
 import { connect } from 'react-redux';
 import {Dispatch} from 'redux'
@@ -28,7 +28,7 @@ export class App extends React.Component<UserComponentType, any> {
     // Cette liaison est nécéssaire afin de permettre
     // l'utilisation de `this` dans la fonction de rappel.
     this.handleCreateUser = this.handleCreateUser.bind(this);
-    this.handleDisplayUser = this.handleDisplayUser.bind(this);
+    this.handleSearchUser = this.handleSearchUser.bind(this);
   }
 
   public componentDidMount() {
@@ -38,8 +38,12 @@ export class App extends React.Component<UserComponentType, any> {
   public componentDidUpdate() {
   }
 
-  handleDisplayUser() {
-    this.props.displayUser(this.props.user);
+  handleSearchUser() {
+    this.props.searchUser(this.props.user);
+  }
+
+  handleDisplayUser(e: any, id: number) {
+    this.props.displayUser(id);
   }
 
   handleCreateUser() {
@@ -154,7 +158,7 @@ export class App extends React.Component<UserComponentType, any> {
                   <Button variant="contained" color="primary" onClick={this.handleCreateUser}>
                       Create
                   </Button>
-                  <Button variant="contained" color="primary" onClick={this.handleDisplayUser}>
+                  <Button variant="contained" color="primary" onClick={this.handleSearchUser}>
                       Search
                   </Button>
                 </div>
@@ -173,6 +177,11 @@ export class App extends React.Component<UserComponentType, any> {
                                   <td> {user.firstname}</td>   
                                   <td> {user.lastname}</td>   
                                   <td> {user.email}</td>   
+                                  <td>
+                                    <Button variant="contained" color="primary" onClick={(e) => this.handleDisplayUser(e, user.id)}>
+                                      Display
+                                    </Button>
+                                  </td>
                           </tr>
                       ) : ''
                     }
@@ -195,7 +204,8 @@ const mapDispatchToProps = (dispatch: Dispatch<BaseAction>) => {
   return {
     getUsers: () => getUsersAction(dispatch),
     createUser: (user: IUser) => createUserAction(dispatch, user),
-    displayUser: (user: IUser) => displayUserAction(dispatch, user),
+    displayUser: (id: number) => displayUserAction(dispatch, id),
+    searchUser: (user: IUser) => searchUserAction(dispatch, user),
     updateUser: (user: IUser) => dispatch({type: UPDATE_USER, payload: user}),
   }
 };

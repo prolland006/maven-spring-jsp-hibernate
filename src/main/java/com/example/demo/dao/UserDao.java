@@ -21,6 +21,15 @@ public interface UserDao {
 	 */
 	public User getUser(User user) throws Exception;
 	
+	
+	/**
+	 * get a user thanks to id
+	 * @param user
+	 * @return the user found or null if not found
+	 */
+	public User getUserId(long id) throws Exception;
+		
+	
 	/**
 	 * get all users
 	 * @return user List

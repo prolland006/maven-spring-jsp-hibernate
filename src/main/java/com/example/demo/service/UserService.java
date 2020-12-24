@@ -38,6 +38,15 @@ public class UserService {
 	}
 	
 	/**
+	 * get a user thanks to id
+	 * @param user
+	 * @return the user found or null if not found
+	 */
+	public User getUserId(long id) throws Exception {
+    	return userDao.getUserId(id);
+	}
+	
+	/**
 	 * get all users
 	 * @return user List
 	 * @throws Exception

@@ -19,7 +19,20 @@ export const createUserAction = (dispatch: Dispatch<BaseAction>, user: IUser) =>
     return { type: CREATE_USER_FETCHED }
 };
 
-export const displayUserAction = (dispatch: Dispatch<BaseAction>, user: IUser) => {
+export const displayUserAction = (dispatch: Dispatch<BaseAction>, id: number) => {
+    UserService.getUserId(id).then((response) => {
+        if (response.data.id !== GetUserFeedbackType.USER_GETTED_SUCCESSFULLY) {
+            dispatch({ type: GET_USER_FAILED, payload: response.data });
+        } else {
+            dispatch({ type: GET_USER_OK, payload: response.data });
+        }
+    },(error) => {
+        dispatch({ type: GET_USER_FAILED, payload: error.data });
+    });
+    return { type: GET_USER_FETCHED }
+};
+
+export const searchUserAction = (dispatch: Dispatch<BaseAction>, user: IUser) => {
     UserService.findUsers(user).then((response) => {
         if (response.data.id !== GetUserFeedbackType.USER_GETTED_SUCCESSFULLY) {
             dispatch({ type: GET_USER_FAILED, payload: response.data });

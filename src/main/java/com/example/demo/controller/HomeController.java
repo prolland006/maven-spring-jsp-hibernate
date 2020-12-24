@@ -248,6 +248,39 @@ public class HomeController {
         return result;
     }
     
+    /**
+	 * get a user thks to firstname & lastname   
+	 * @param user
+	 * @return
+	 */
+    @RequestMapping(value = "/getuserId", method = RequestMethod.POST)
+    public GetUserResult getUserId(@RequestBody User user) {
+    	
+    	logger.info("getUserId - " + user.toString());
+		GetUserResult result = new GetUserResult();
+		
+		User userFound;
+		try {
+			userFound = userService.getUserId(user.getId());
+	        if (userFound!=null) {
+	        	ArrayList users = new ArrayList();
+	        	users.add(userFound);
+	            result.setId(GetUserResult.USER_GET_SUCCESSFULLY);
+	    		result.setMessage("User has been found");
+	    		result.setUsers(users);
+	        } else {
+	        	result.setId(GetUserResult.USER_NOT_FOUND);
+	    		result.setMessage("User not found !");
+	        }
+		} catch (Exception e) {
+			e.printStackTrace();
+        	result.setId(GetUserResult.ERROR);
+    		result.setMessage(e.getMessage());
+		}
+        
+        return result;
+    }
+    
     @RequestMapping(value = "/findusers", method = RequestMethod.POST)
     public GetUserResult findUsers(@RequestBody User user) {
     	logger.info("findUsers - " + user.toString());
