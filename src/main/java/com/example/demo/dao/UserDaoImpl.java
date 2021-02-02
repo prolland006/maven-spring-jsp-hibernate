@@ -146,25 +146,35 @@ public class UserDaoImpl implements UserDao  {
     	    SessionFactory sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
     	    Session session = sessionFactory.openSession();
     	    StringBuffer sb = new StringBuffer("SELECT u FROM User u WHERE ");
+    	    String []param = new String[3];
     	    int paramNb = 1;
-    	    if (user.getFirstname().trim().compareTo("") != 0) {
-                sb.append("upper(u.firstname) LIKE CONCAT('%',?");
+    	    if (user.getFirstname()!=null && user.getFirstname().trim().compareTo("") != 0) {
+                sb.append("UPPER(u.firstname) LIKE CONCAT('%',?");
                 sb.append(Integer.toString(paramNb));
                 sb.append(",'%')");
+                param[paramNb-1] = user.getFirstname().toUpperCase();
                 paramNb++;
     	    }
     	    
-    	    if (user.getLastname().trim().compareTo("") != 0) {
-                sb.append("upper(u.lastname) LIKE CONCAT('%',?");
+    	    if (user.getLastname()!=null && user.getLastname().trim().compareTo("") != 0) {
+    	    	if (paramNb != 1) {
+    	    		sb.append(" AND ");
+    	    	}
+                sb.append("UPPER(u.lastname) LIKE CONCAT('%',?");
                 sb.append(Integer.toString(paramNb));
                 sb.append(",'%')");
+                param[paramNb-1] = user.getLastname().toUpperCase();
                 paramNb++;
     	    }
 
-    	    if (user.getAddress().trim().compareTo("") != 0) {
-                sb.append("upper(u.address) LIKE CONCAT('%',?");
+    	    if (user.getAddress()!=null && user.getAddress().trim().compareTo("") != 0) {
+    	    	if (paramNb != 1) {
+    	    		sb.append(" AND ");
+    	    	}
+                sb.append("UPPER(u.address) LIKE CONCAT('%',?");
                 sb.append(Integer.toString(paramNb));
                 sb.append(",'%')");
+                param[paramNb-1] = user.getAddress().toUpperCase();
                 paramNb++;
     	    }
     	    
@@ -173,7 +183,9 @@ public class UserDaoImpl implements UserDao  {
     	    }
     	    
             Query query = session.createQuery(sb.toString());
-	        query.setParameter(1, user.getFirstname().toUpperCase());
+            for (int i=0; i<paramNb-1; i++) {
+                query.setParameter(i+1, param[i]);
+            }
 	        users = query.getResultList();
         
 		    session.close();

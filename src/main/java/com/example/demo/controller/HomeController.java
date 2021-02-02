@@ -8,13 +8,11 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,11 +33,13 @@ import com.example.demo.service.UserService;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@SpringBootApplication
 public class HomeController {
 	
 	@Autowired
 	UserService userService;
+	
+	@Value("${spring.application.name}")
+	private String serviceName;
 	
 	private static final Logger logger = Logger.getLogger(HomeController.class);
 	
@@ -127,6 +127,7 @@ public class HomeController {
     
     @GetMapping("users")
     public GetUserResult getUsers() {
+    	System.out.println("ServiceName:"+this.serviceName);
     	logger.info("getUsers");
 		GetUserResult result = new GetUserResult();
 		
