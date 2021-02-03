@@ -4,10 +4,12 @@ import './App.css';
 import { connect } from 'react-redux';
 import {Dispatch} from 'redux'
 import Button from '@material-ui/core/Button';
-import { createStyles, Grid, Paper, TextField, withStyles } from '@material-ui/core';
+import { Avatar, createStyles, Grid, IconButton, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Paper, TextField, withStyles } from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import { FeedbackMessage, CreateUserFeedbackType } from './model';
 import { UPDATE_USER } from './store/actionTypes';
+import { List } from '@material-ui/core';
 
 const styles = (theme: any) => createStyles({  
   root: {
@@ -167,26 +169,26 @@ export class App extends React.Component<UserComponentType, any> {
           </Grid>
           <Grid item xs={12} sm={6}>
             <Paper className={classes.paper}>
-              <table className = "table table-striped">
-                <tbody>
-                    {
-                      this.props.users ? this.props.users.map(
-                          user => 
-                          <tr key = {user.id}>
-                                  <td> {user.id}</td>   
-                                  <td> {user.firstname}</td>   
-                                  <td> {user.lastname}</td>   
-                                  <td> {user.email}</td>   
-                                  <td>
-                                    <Button variant="contained" color="primary" onClick={(e) => this.handleDisplayUser(e, user.id)}>
-                                      Display
-                                    </Button>
-                                  </td>
-                          </tr>
-                      ) : ''
-                    }
-                </tbody>
-              </table>            
+              <List dense={false}>
+                {
+                  this.props.users ? this.props.users.map(
+                    user => (
+                      <ListItem>
+                        <ListItemAvatar>
+                          <Avatar src="/broken-image.jpg" />
+                        </ListItemAvatar>
+                          <ListItemText
+                            primary={user.id+' '+user.firstname+' '+user.lastname+' '+user.email} 
+                            onClick={(e) => this.handleDisplayUser(e, user.id)} />
+                          <ListItemSecondaryAction>
+                            <IconButton edge="end" aria-label="delete">
+                              <DeleteIcon />
+                            </IconButton>
+                          </ListItemSecondaryAction>
+                      </ListItem>
+              )) : ''
+                }
+              </List>
             </Paper>
           </Grid>
         </Grid>
