@@ -4,12 +4,11 @@ import './App.css';
 import { connect } from 'react-redux';
 import {Dispatch} from 'redux'
 import Button from '@material-ui/core/Button';
-import { Avatar, createStyles, Grid, IconButton, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Paper, TextField, withStyles } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
+import { createStyles, Grid, Paper, TextField, withStyles } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import { FeedbackMessage, CreateUserFeedbackType } from './model';
 import { UPDATE_USER } from './store/actionTypes';
-import { List } from '@material-ui/core';
+import { UserListContainer } from './components/user.list.container.';
 
 const styles = (theme: any) => createStyles({  
   root: {
@@ -42,10 +41,6 @@ export class App extends React.Component<UserComponentType, any> {
 
   handleSearchUser() {
     this.props.searchUser(this.props.user);
-  }
-
-  handleDisplayUser(e: any, id: number) {
-    this.props.displayUser(id);
   }
 
   handleCreateUser() {
@@ -167,30 +162,7 @@ export class App extends React.Component<UserComponentType, any> {
               </form>
             </Paper>
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <Paper className={classes.paper}>
-              <List dense={false}>
-                {
-                  this.props.users ? this.props.users.map(
-                    user => (
-                      <ListItem>
-                        <ListItemAvatar>
-                          <Avatar src="/broken-image.jpg" />
-                        </ListItemAvatar>
-                          <ListItemText
-                            primary={user.id+' '+user.firstname+' '+user.lastname+' '+user.email} 
-                            onClick={(e) => this.handleDisplayUser(e, user.id)} />
-                          <ListItemSecondaryAction>
-                            <IconButton edge="end" aria-label="delete">
-                              <DeleteIcon />
-                            </IconButton>
-                          </ListItemSecondaryAction>
-                      </ListItem>
-              )) : ''
-                }
-              </List>
-            </Paper>
-          </Grid>
+          <UserListContainer />
         </Grid>
       </div>
     );
