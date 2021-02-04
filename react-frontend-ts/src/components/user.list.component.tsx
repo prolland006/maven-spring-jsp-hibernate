@@ -6,8 +6,11 @@ import { List } from '@material-ui/core';
 
 export const UserList: React.FunctionComponent<UserComponentType> = props => {
 
+  const [selectedUserId, setSelectedUserId] = React.useState(-1);
+
   const handleDisplayUser = (e: any, id: number) => {
     props.displayUser(id);
+    setSelectedUserId(id);
   }
 
   const { classes } = props;
@@ -19,7 +22,10 @@ export const UserList: React.FunctionComponent<UserComponentType> = props => {
         {
           props.users ? props.users.map(
             user => (
-              <ListItem>
+              <ListItem
+                key={user.id}
+                selected={selectedUserId!==-1 && selectedUserId===user.id}
+              >
                 <ListItemAvatar>
                   <Avatar src="/broken-image.jpg" />
                 </ListItemAvatar>
