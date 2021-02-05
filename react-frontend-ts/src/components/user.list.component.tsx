@@ -10,6 +10,10 @@ export const UserList: React.FunctionComponent<UserComponentType> = props => {
     props.displayUser(id);
   }
 
+  const handleRemoveUser = (e: any, id: number) => {
+    props.removeUser(id);
+  }
+
   const { classes } = props;
 
   return (
@@ -30,7 +34,9 @@ export const UserList: React.FunctionComponent<UserComponentType> = props => {
                     primary={user.id+' '+user.firstname+' '+user.lastname+' '+user.email} 
                     onClick={(e) => handleDisplayUser(e, user.id)} />
                   <ListItemSecondaryAction>
-                    <IconButton edge="end" aria-label="delete">
+                    <IconButton edge="end" aria-label="delete"
+                    onClick={(e) => handleRemoveUser(e, user.id)}                    
+                    >
                       <DeleteIcon />
                     </IconButton>
                   </ListItemSecondaryAction>

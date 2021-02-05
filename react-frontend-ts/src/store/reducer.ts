@@ -55,6 +55,8 @@ const reducer = (
         };
       case actionTypes.CREATE_USER_OK:
       case actionTypes.CREATE_USER_FAILED:
+      case actionTypes.REMOVE_USER_OK:
+      case actionTypes.REMOVE_USER_FAILED:
         return {...state, feedback: action.payload};
       case actionTypes.UPDATE_USER:
         return {

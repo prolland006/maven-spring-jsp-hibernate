@@ -1,6 +1,7 @@
 import UserService from "../services/UserService"
 import { Dispatch } from 'redux';
 import { ALL_USERS, ALL_USERS_RECEIVED, CREATE_USER_FAILED, CREATE_USER_FETCHED, CREATE_USER_OK, GET_USER_FAILED, GET_USER_FETCHED, GET_USER_OK } from "./actionTypes";
+import { REMOVE_USER_FAILED, REMOVE_USER_FETCHED, REMOVE_USER_OK } from "./actionTypes";
 import { GetUserFeedbackType } from "../model";
 
 export const getUsersAction = (dispatch: Dispatch<BaseAction>) => {
@@ -18,6 +19,16 @@ export const createUserAction = (dispatch: Dispatch<BaseAction>, user: IUser) =>
         dispatch({ type: CREATE_USER_FAILED, payload: error.data });
     });
     return { type: CREATE_USER_FETCHED }
+};
+
+export const removeUserAction = (dispatch: Dispatch<BaseAction>, id: number) => {
+    UserService.removeUser(id).then((response) => {
+        dispatch({ type: REMOVE_USER_OK, payload: response.data });
+        getUsersAction(dispatch);
+    },(error) => {
+        dispatch({ type: REMOVE_USER_FAILED, payload: error.data });
+    });
+    return { type: REMOVE_USER_FETCHED }
 };
 
 export const displayUserAction = (dispatch: Dispatch<BaseAction>, id: number) => {

@@ -13,7 +13,14 @@ public interface UserDao {
 	 */
 	public boolean createUser(User user) throws Exception;
 
-	
+	/**
+	 * Remove a user
+	 * @return true if user removed, false if user doesn't exist
+	 * @throws Exception
+	 */
+	public boolean removeUser(long id) throws Exception;
+
+		
 	/**
 	 * get a user thanks to firstname and lastname
 	 * @param user

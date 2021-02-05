@@ -1,5 +1,5 @@
 import React from 'react';
-import { getUsersAction, createUserAction, displayUserAction, searchUserAction} from './store/actionCreators'
+import { getUsersAction, createUserAction, displayUserAction, searchUserAction, removeUserAction} from './store/actionCreators'
 import './App.css';
 import { connect } from 'react-redux';
 import {Dispatch} from 'redux'
@@ -181,6 +181,7 @@ const mapDispatchToProps = (dispatch: Dispatch<BaseAction>) => {
     displayUser: (id: number) => displayUserAction(dispatch, id),
     searchUser: (user: IUser) => searchUserAction(dispatch, user),
     updateUser: (user: IUser) => dispatch({type: UPDATE_USER, payload: user}),
+    removeUser: (id: number) => removeUserAction(dispatch, id),
   }
 };
 

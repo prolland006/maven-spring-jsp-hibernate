@@ -43,6 +43,18 @@ public class HomeController {
 	
 	private static final Logger logger = Logger.getLogger(HomeController.class);
 	
+	private class RemoveUserResult extends ErrorResult {
+		public static final int USER_ALREADY_EXIST = 0;
+		public static final int USER_REMOVED_SUCCESSFULLY = 1;
+		public RemoveUserResult() {
+			super();
+		}
+		
+		public RemoveUserResult(int id, String message) {
+			super(id, message);
+		}
+	}
+	
 	private class CreateUserResult extends ErrorResult {
 		public static final int USER_ALREADY_EXIST = 0;
 		public static final int USER_CREATED_SUCCESSFULLY = 1;
@@ -347,4 +359,35 @@ public class HomeController {
     	} 
         return result;
     }	
+    
+    
+    /**
+	 * remove a user    
+	 * @param user
+	 * @return
+	 */
+    @RequestMapping(value = "/removeuser", method = RequestMethod.POST)
+    public RemoveUserResult removeUser(@RequestBody User user) {
+    	
+		logger.info("removeUser - " + user.toString());
+		RemoveUserResult result = new RemoveUserResult();
+
+		try {
+			
+	    	if (!userService.removeUser(user.getId())) {
+	    		result.setId(RemoveUserResult.USER_ALREADY_EXIST);
+	    		result.setMessage("User does not exist");
+	    	} else {
+	    		result.setId(RemoveUserResult.USER_REMOVED_SUCCESSFULLY);
+	    		result.setMessage("User removed successfully");
+	    	}
+    	    	    	    
+    	} catch (Exception ex) {
+    	    ex.printStackTrace();
+    	    result.setId(RemoveUserResult.ERROR);
+    	    result.setMessage(ex.getMessage());
+    	} 
+        return result;
+    }	    
+    
 }

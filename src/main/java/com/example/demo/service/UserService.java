@@ -20,6 +20,15 @@ public class UserService {
 	UserDao userDao;
 
 	/**
+	 * Remove a user
+	 * @return true if user removed, false if user does not exist
+	 * @throws Exception
+	 */
+	public boolean removeUser(long id) throws Exception {
+	    return userDao.removeUser(id);
+	}
+	
+	/**
 	 * Create a user
 	 * @return true if user created, false if user already exist or error
 	 * @throws Exception

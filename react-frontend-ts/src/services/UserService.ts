@@ -6,6 +6,7 @@ const POST_USERS_URL = '/demo/createuser';
 const GET_USER_URL = '/demo/getuser';
 const GET_USER_ID_URL = '/demo/getuserId';
 const FIND_USERS_URL = '/demo/findusers';
+const REMOVE_USER_URL = '/demo/removeuser';
 
 class UserService {
 
@@ -20,6 +21,12 @@ class UserService {
             age: user.age,
             address: user.address,
             pays: 'france',
+        });
+    }
+
+    removeUser(id: number) {
+        return axios.post(BACKEND_URL+REMOVE_USER_URL, {
+            id: id,
         });
     }
 

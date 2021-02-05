@@ -1,6 +1,6 @@
 import {Dispatch} from 'redux'
 import { connect } from 'react-redux';
-import { createUserAction, displayUserAction, getUsersAction, searchUserAction } from '../store/actionCreators';
+import { createUserAction, displayUserAction, getUsersAction, removeUserAction, searchUserAction } from '../store/actionCreators';
 import { UPDATE_USER } from '../store/actionTypes';
 import { UserList } from './user.list.component';
 import { withStyles } from '@material-ui/core';
@@ -28,6 +28,7 @@ return {
   displayUser: (id: number) => displayUserAction(dispatch, id),
   searchUser: (user: IUser) => searchUserAction(dispatch, user),
   updateUser: (user: IUser) => dispatch({type: UPDATE_USER, payload: user}),
+  removeUser: (id: number) => removeUserAction(dispatch, id),
 }
 };
 export const UserListContainer = connect(mapStateToProps, mapDispatchToProps)(withStyles(styles as any, { withTheme: true })(UserList as any));

@@ -44,6 +44,31 @@ public class UserDaoImpl implements UserDao  {
 	    return true;
 	}
 	
+	/**
+	 * Remove a user
+	 * @return true if user removed, false if user does not exist
+	 * @throws Exception
+	 */
+	public boolean removeUser(long id) throws Exception {
+		User userFound = null;
+		final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+    	        .configure() // configures settings from hibernate.cfg.xml
+    	        .build();
+
+	    SessionFactory sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
+	    Session session = sessionFactory.openSession();
+	    
+    	Criteria criteria = session.createCriteria(User.class);
+        criteria.add(Restrictions.eq("id", id));
+         
+        userFound = (User) criteria.uniqueResult();
+	    session.beginTransaction();
+	    session.remove(userFound);
+	    session.getTransaction().commit();
+	    session.close();
+	    return true;
+	}	
+	
 	public List<User> getUsers() throws Exception {
 		List<User> users = null;
 		final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
