@@ -1,5 +1,6 @@
 package com.example.demo.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -56,12 +57,9 @@ public class UserDaoImpl implements UserDao  {
     	        .build();
 
 	    SessionFactory sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
-	    Session session = sessionFactory.openSession();
-	    
-    	Criteria criteria = session.createCriteria(User.class);
-        criteria.add(Restrictions.eq("id", id));
-         
-        userFound = (User) criteria.uniqueResult();
+	    Session session = sessionFactory.openSession();    
+        userFound = session.find(User.class, id);
+        
 	    session.beginTransaction();
 	    session.remove(userFound);
 	    session.getTransaction().commit();
