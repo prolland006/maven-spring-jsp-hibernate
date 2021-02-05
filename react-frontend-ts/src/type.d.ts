@@ -15,6 +15,7 @@ type UserState = {
   user: IUser,
   users: IUser[],
   feedback: FeedbackCreateUser.FeedbackMessage,
+  selectedUserId: number,
 }
 
 type BaseAction = {

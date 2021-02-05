@@ -290,7 +290,7 @@ public class HomeController {
 		List<User> users;
 		try {
 			users = userService.findUser(user);
-	        if (users!=null) {
+	        if (users!=null || users.size()==0) {
 	            result.setId(GetUserResult.USER_GET_SUCCESSFULLY);
 	    		result.setMessage("Users has been found");
 	    		result.setUsers(users);

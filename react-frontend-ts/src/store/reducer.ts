@@ -15,6 +15,7 @@ const initialState: UserState = {
     id: CreateUserFeedbackType.UNDEFINED,
     message: 'undefined',
   },
+  selectedUserId: -1,
 }
 
 const reducer = (
@@ -29,7 +30,8 @@ const reducer = (
           feedback:  {
             id: action.payload.id,
             message: action.payload.message,
-          }
+          },
+          selectedUserId: -1,
         };
       case actionTypes.GET_USER_OK:
         return {
@@ -40,7 +42,8 @@ const reducer = (
           feedback:  {
             id: action.payload.id,
             message: action.payload.message,
-          }
+          },
+          selectedUserId: action.payload.users.length!==0 ? action.payload.users[0].id : -1,
         };
       case actionTypes.GET_USER_FAILED:
         return {

@@ -13,6 +13,7 @@ export const getUsersAction = (dispatch: Dispatch<BaseAction>) => {
 export const createUserAction = (dispatch: Dispatch<BaseAction>, user: IUser) => {
     UserService.createUser(user).then((response) => {
         dispatch({ type: CREATE_USER_OK, payload: response.data });
+        getUsersAction(dispatch);
     },(error) => {
         dispatch({ type: CREATE_USER_FAILED, payload: error.data });
     });
