@@ -4,11 +4,40 @@ import './App.css';
 import { connect } from 'react-redux';
 import {Dispatch} from 'redux'
 import Button from '@material-ui/core/Button';
-import { createStyles, Grid, Paper, TextField, withStyles } from '@material-ui/core';
+import { Box, createStyles, Grid, Paper, Tab, Tabs, TextField, Typography, withStyles } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import { FeedbackMessage, CreateUserFeedbackType } from './model';
 import { UPDATE_USER } from './store/actionTypes';
 import { UserListContainer } from './components/user.list.container.';
+import { AppBar } from '@material-ui/core';
+import PropTypes from "prop-types";
+
+function TabPanel(props: any) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={3}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.any.isRequired,
+  value: PropTypes.any.isRequired
+};
+
 
 const styles = (theme: any) => createStyles({  
   root: {
@@ -30,6 +59,10 @@ export class App extends React.Component<UserComponentType, any> {
     // l'utilisation de `this` dans la fonction de rappel.
     this.handleCreateUser = this.handleCreateUser.bind(this);
     this.handleSearchUser = this.handleSearchUser.bind(this);
+
+    this.state = {
+      value: 0,
+    }
   }
 
   public componentDidMount() {
@@ -71,6 +104,9 @@ export class App extends React.Component<UserComponentType, any> {
         address: e.target.value
     });
   }
+  handleChange = (event: any, newValue: number) => {
+    this.setState({value: newValue});
+  };
 
   getAlertMessage = (feedback: FeedbackMessage) => {
     switch (feedback.id) {
@@ -113,57 +149,68 @@ export class App extends React.Component<UserComponentType, any> {
     const { classes } = this.props;
     return (
       <div>
-        <h1 className = "text-center"> Users</h1>
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={6}>
-            <Paper className={classes.paper}>
-              <form>
-                <div>
-                  <TextField 
-                    id="standard-basic" 
-                    label="firstname" 
-                    value={this.props.user.firstname || ''}
-                    onChange={this.handleChangeFirstname}
-                  />
-                </div>
-                <div>
-                  <TextField 
-                    id="standard-basic" 
-                    label="lastname"
-                    value={this.props.user.lastname || ''}
-                    onChange={this.handleChangeLastname}
-                  />
-                </div>
-                <div>
-                  <TextField 
-                    id="standard-basic" 
-                    label="address" 
-                    value={this.props.user.address || ''}
-                    onChange={this.handleChangeAddress}
-                  />
-                </div>
-                <div>
-                  <TextField 
-                    id="standard-basic" 
-                    label="age"
-                    value={this.props.user.age}
-                    onChange={this.handleChangeAge || undefined}
-                  />
-                </div>
-                { this.getAlertMessage(this.props.feedback) }
-                <div>
-                  <Button variant="contained" color="primary" onClick={this.handleCreateUser}>
-                      Create
-                  </Button>
-                  <Button variant="contained" color="primary" onClick={this.handleSearchUser}>
-                      Search
-                  </Button>
-                </div>
-              </form>
-            </Paper>
+        <AppBar position="static">
+          <Tabs value={this.state.value} onChange={this.handleChange} aria-label="simple tabs example">
+            <Tab label="Users" />
+            <Tab label="Messages" />
+          </Tabs>
+        </AppBar>
+        <TabPanel value={this.state.value} index={0}>
+          <h1 className = "text-center"> Users</h1>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6}>
+              <Paper className={classes.paper}>
+                <form>
+                  <div>
+                    <TextField 
+                      id="standard-basic" 
+                      label="firstname" 
+                      value={this.props.user.firstname || ''}
+                      onChange={this.handleChangeFirstname}
+                    />
+                  </div>
+                  <div>
+                    <TextField 
+                      id="standard-basic" 
+                      label="lastname"
+                      value={this.props.user.lastname || ''}
+                      onChange={this.handleChangeLastname}
+                    />
+                  </div>
+                  <div>
+                    <TextField 
+                      id="standard-basic" 
+                      label="address" 
+                      value={this.props.user.address || ''}
+                      onChange={this.handleChangeAddress}
+                    />
+                  </div>
+                  <div>
+                    <TextField 
+                      id="standard-basic" 
+                      label="age"
+                        value={this.props.user.age}
+                      onChange={this.handleChangeAge || undefined}
+                    />
+                  </div>
+                  { this.getAlertMessage(this.props.feedback) }
+                  <div>
+                    <Button variant="contained" color="primary" onClick={this.handleCreateUser}>
+                        Create
+                    </Button>
+                    <Button variant="contained" color="primary" onClick={this.handleSearchUser}>
+                        Search
+                    </Button>
+                  </div>
+                </form>
+              </Paper>
+            </Grid>
+            <UserListContainer />
           </Grid>
-          <UserListContainer />
-        </Grid>
+        </TabPanel>
+        <TabPanel value={this.state.value} index={1}>
+        <h1 className = "text-center"> Messages</h1>
+        </TabPanel>
       </div>
     );
 	}
