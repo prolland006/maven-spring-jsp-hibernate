@@ -1,6 +1,8 @@
 package com.example.demo.entities;
 
 
+import java.util.List;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
@@ -17,6 +19,9 @@ import org.hibernate.validator.constraints.Range;
 @Entity
 @Table(name = "user")
 public class User {
+	@Id
+    @Column(name = "user_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     
     @NotEmpty(message = "Firstname is mandatory")
@@ -28,13 +33,31 @@ public class User {
     private int age;
     @Pattern(regexp="france", message="France is mandatory") 
     private String pays;
+    @NotEmpty(message = "Company is mandatory")
+    private String company;
+    
+	@OneToMany(targetEntity=Message.class, mappedBy="user", fetch=FetchType.EAGER)
+    private List<Message> messages;
  
     public User() {
     }
  
-    @Id
-    @Column(name = "user_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public List<Message> getMessage() {
+		return messages;
+	}
+
+	public String getCompany() {
+		return company;
+	}
+
+	public void setCompany(String company) {
+		this.company = company;
+	}
+
+	public void setMessage(List<Message> messages) {
+		this.messages = messages;
+	}
+
     public long getId() {
         return id;
     }
