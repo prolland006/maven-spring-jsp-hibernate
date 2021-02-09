@@ -1,14 +1,15 @@
 import React from 'react';
-import { getUsersAction, createUserAction, displayUserAction, searchUserAction, removeUserAction} from './store/actionCreators'
+import { Dispatch } from 'redux';
 import './App.css';
-import { connect } from 'react-redux';
-import {Dispatch} from 'redux'
 import { Box, createStyles, Grid, Tab, Tabs, Typography, withStyles } from '@material-ui/core';
-import { UPDATE_USER } from './store/actionTypes';
-import { UserListContainer } from './components/user.list.container.';
 import { AppBar } from '@material-ui/core';
 import PropTypes from "prop-types";
 import { UserContainer } from './components/user.container';
+import { MessageListContainer } from './components/message.list.container';
+import { MessageContainer } from './components/message.container';
+import { UserListContainer } from './components/user.list.container';
+import { connect } from 'react-redux';
+import { getMessagesAction, getUsersAction } from './store/actionCreators';
 
 function TabPanel(props: any) {
   const { children, value, index, ...other } = props;
@@ -36,21 +37,9 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired
 };
 
+export class App extends React.Component<any, any> {
 
-const styles = (theme: any) => createStyles({  
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-  },
-});
-
-export class App extends React.Component<UserComponentType, any> {
-
-  constructor(props: UserComponentType) {
+  constructor(props: any) {
     super(props);
 
     this.state = {
@@ -60,6 +49,7 @@ export class App extends React.Component<UserComponentType, any> {
 
   public componentDidMount() {
       this.props.getUsers();
+      this.props.getMessages();
   }
 
   public componentDidUpdate() {
@@ -86,7 +76,11 @@ export class App extends React.Component<UserComponentType, any> {
           </Grid>
         </TabPanel>
         <TabPanel value={this.state.value} index={1}>
-        <h1 className = "text-center"> Messages</h1>
+          <h1 className = "text-center"> Messages</h1>
+          <Grid container spacing={3}>
+            <MessageContainer />
+            <MessageListContainer />
+          </Grid>
         </TabPanel>
       </div>
     );
@@ -94,22 +88,27 @@ export class App extends React.Component<UserComponentType, any> {
 }
 
 
-const mapStateToProps = (state: GlobalState) => {
-    return state.userState;
+const styles = (theme: any) => createStyles({  
+  root: {
+    flexGrow: 1,
+  },
+  paper: {
+    padding: theme.spacing(2),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  },
+});
+
+
+export const mapStateToProps = (state: GlobalState) => {
+  return state.userState;
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<BaseAction>) => {
-  return {
-    getUsers: () => getUsersAction(dispatch),
-    createUser: (user: IUser) => createUserAction(dispatch, user),
-    displayUser: (id: number) => displayUserAction(dispatch, id),
-    searchUser: (user: IUser) => searchUserAction(dispatch, user),
-    updateUser: (user: IUser) => dispatch({type: UPDATE_USER, payload: user}),
-    removeUser: (id: number) => removeUserAction(dispatch, id),
-  }
+export const mapDispatchToProps = (dispatch: Dispatch<BaseAction>) => {
+return {
+	getUsers: () => getUsersAction(dispatch),
+  getMessages: () => getMessagesAction(dispatch),
+}
 };
 
-export type UserComponentType = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & {classes: any};
-
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles as any, { withTheme: true })(App as any));
-

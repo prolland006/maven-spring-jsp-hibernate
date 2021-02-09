@@ -1,8 +1,10 @@
 import { combineReducers, createStore} from 'redux';
-import reducer from './reducer';
+import userReducer from './user.reducer';
+import messageReducer from './message.reducer';
 
 const store = createStore<GlobalState, any, any, any>(
     combineReducers({
-        userState: reducer
+        userState: userReducer,
+        messageState: messageReducer,
 }));
 export default store;

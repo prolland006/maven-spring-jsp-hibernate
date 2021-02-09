@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,9 +9,6 @@ import javax.validation.ConstraintViolationException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,14 +17,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.demo.controller.restmessage.CreateUserResult;
+import com.example.demo.controller.restmessage.GetMessageResult;
+import com.example.demo.controller.restmessage.GetUserResult;
+import com.example.demo.controller.restmessage.RemoveUserResult;
 import com.example.demo.entities.User;
+import com.example.demo.service.MessageService;
 import com.example.demo.service.UserService;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -37,93 +35,16 @@ public class HomeController {
 	
 	@Autowired
 	UserService userService;
+
+	@Autowired
+	MessageService messageService;
 	
 	@Value("${spring.application.name}")
 	private String serviceName;
 	
 	private static final Logger logger = Logger.getLogger(HomeController.class);
 	
-	private class RemoveUserResult extends ErrorResult {
-		public static final int USER_ALREADY_EXIST = 0;
-		public static final int USER_REMOVED_SUCCESSFULLY = 1;
-		public RemoveUserResult() {
-			super();
-		}
-		
-		public RemoveUserResult(int id, String message) {
-			super(id, message);
-		}
-	}
 	
-	private class CreateUserResult extends ErrorResult {
-		public static final int USER_ALREADY_EXIST = 0;
-		public static final int USER_CREATED_SUCCESSFULLY = 1;
-		public static final int CONSTRAINT_VIOLATION = 2;
-		public CreateUserResult() {
-			super();
-		}
-		
-		public CreateUserResult(int id, String message) {
-			super(id, message);
-		}
-	}
-	
-	private class GetUserResult extends ErrorResult {
-		public static final int USER_GET_SUCCESSFULLY = 1;
-		public static final int USER_NOT_FOUND= 2;
-		
-		private List<User> users = null;
-
-		public GetUserResult() {
-			super();
-		}
-		
-		public GetUserResult(int id, String message) {
-			super(id, message);
-		}
-
-		public List<User> getUsers() {
-			return users;
-		}
-
-		public void setUsers(List<User> users) {
-			this.users = users;
-		}
-	}
-
-	private class ErrorResult {
-		public static final int UNDEFINED = -1;
-		public static final int ERROR = 3;
-
-		int id;
-		String message;
-		
-		public ErrorResult() {
-			this.id = UNDEFINED;
-			this.message = "undefined";
-		}
-		public ErrorResult(int id, String message) {
-			this.id = id;
-			this.message = message;
-		}
-		public int getId() {
-			return id;
-		}
-		public void setId(int id) {
-			this.id = id;
-		}
-		public String getMessage() {
-			return message;
-		}
-		public void setMessage(String message) {
-			this.message = message;
-		}
-		@Override
-		public String toString() {
-			return "ErrorResult [id=" + id + ", message=" + message + "]";
-		}	
-		
-	}
     /**
      * Display the user page : user.jsp
      * @param model
@@ -150,6 +71,23 @@ public class HomeController {
 		} catch (Exception e) {
 			e.printStackTrace();
         	result.setId(GetUserResult.ERROR);
+    		result.setMessage(e.getMessage());
+		}
+        return result;
+    }
+    
+    @GetMapping("messages")
+    public GetMessageResult getMessages() {
+    	logger.info("getMessages");
+		GetMessageResult result = new GetMessageResult();
+		
+        try {
+        	result.setId(GetMessageResult.MESSAGE_GET_SUCCESSFULLY);
+    		result.setMessage("Messages have been found");
+    		result.setMessages(this.messageService.getMessages());
+		} catch (Exception e) {
+			e.printStackTrace();
+        	result.setId(GetMessageResult.ERROR);
     		result.setMessage(e.getMessage());
 		}
         return result;

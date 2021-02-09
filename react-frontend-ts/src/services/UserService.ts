@@ -2,6 +2,7 @@ import axios from 'axios'
 
 const BACKEND_URL = 'http://localhost:8080' 
 const GET_USERS_URL = '/demo/users';
+const GET_MESSAGES_URL = '/demo/messages';
 const POST_USERS_URL = '/demo/createuser';
 const GET_USER_URL = '/demo/getuser';
 const GET_USER_ID_URL = '/demo/getuserId';
@@ -12,6 +13,10 @@ class UserService {
 
     getUsers(){
         return axios.get(BACKEND_URL+GET_USERS_URL);
+    }
+
+    getMessages(){
+        return axios.get(BACKEND_URL+GET_MESSAGES_URL);
     }
 
     createUser(user: IUser) {

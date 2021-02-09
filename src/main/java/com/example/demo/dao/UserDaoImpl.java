@@ -1,6 +1,5 @@
 package com.example.demo.dao;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -18,7 +17,6 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
-import com.example.demo.entities.Message;
 import com.example.demo.entities.User;
 
 @Repository
@@ -41,25 +39,6 @@ public class UserDaoImpl implements UserDao  {
 	    Session session = sessionFactory.openSession();
 	    session.beginTransaction();
 	    session.save(user);
-	    session.getTransaction().commit();
-	    session.close();
-	    return true;
-	}
-	
-	/**
-	 * Create a message
-	 * @return true if message created, false error
-	 * @throws Exception
-	 */
-	public boolean createMessage(Message message) throws Exception {
-		final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-    	        .configure() // configures settings from hibernate.cfg.xml
-    	        .build();
-
-	    SessionFactory sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
-	    Session session = sessionFactory.openSession();
-	    session.beginTransaction();
-	    session.save(message);
 	    session.getTransaction().commit();
 	    session.close();
 	    return true;
@@ -112,7 +91,7 @@ public class UserDaoImpl implements UserDao  {
     	    throw ex;
     	}
     	return users;		
-	}
+	}	
 	
 	/**
 	 * get a user thanks to firstname and lastname

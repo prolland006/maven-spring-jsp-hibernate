@@ -31,4 +31,7 @@ return {
   removeUser: (id: number) => removeUserAction(dispatch, id),
 }
 };
+
+export type ComponentType = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & {classes: any};
+
 export const UserContainer = connect(mapStateToProps, mapDispatchToProps)(withStyles(styles as any, { withTheme: true })(User as any));

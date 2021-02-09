@@ -1,10 +1,10 @@
-import {Dispatch} from 'redux'
 import { connect } from 'react-redux';
-import { createUserAction, displayUserAction, getUsersAction, removeUserAction, searchUserAction } from '../store/actionCreators';
-import { UPDATE_USER } from '../store/actionTypes';
-import { UserList } from './user.list.component';
 import { withStyles } from '@material-ui/core';
 import { createStyles } from '@material-ui/core';
+import { createUserAction, displayUserAction, getUsersAction, removeUserAction, searchUserAction } from '../store/actionCreators';
+import { Dispatch } from 'redux';
+import { UPDATE_USER } from '../store/actionTypes';
+import { UserList } from './user.list.component';
 
 const styles = (theme: any) => createStyles({  
   root: {
@@ -17,11 +17,12 @@ const styles = (theme: any) => createStyles({
   },
 });
 
-const mapStateToProps = (state: GlobalState) => {
+
+export const mapStateToProps = (state: GlobalState) => {
   return state.userState;
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<BaseAction>) => {
+export const mapDispatchToProps = (dispatch: Dispatch<BaseAction>) => {
 return {
   getUsers: () => getUsersAction(dispatch),
   createUser: (user: IUser) => createUserAction(dispatch, user),
@@ -31,4 +32,7 @@ return {
   removeUser: (id: number) => removeUserAction(dispatch, id),
 }
 };
+
+export type ComponentType = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps> & {classes: any};
+
 export const UserListContainer = connect(mapStateToProps, mapDispatchToProps)(withStyles(styles as any, { withTheme: true })(UserList as any));

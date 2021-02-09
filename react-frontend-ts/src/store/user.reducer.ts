@@ -18,7 +18,7 @@ const initialState: UserState = {
   selectedUserId: -1,
 }
 
-const reducer = (
+const userReducer = (
   state: UserState = initialState,
   action: BaseAction
 ): UserState => {
@@ -69,4 +69,4 @@ const reducer = (
   }
   return {...state};
 }
-export default reducer
+export default userReducer

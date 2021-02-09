@@ -2,16 +2,16 @@ import * as React from 'react';
 import { Avatar, Grid, IconButton, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Paper} from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { List } from '@material-ui/core';
-import { ComponentType } from './user.list.container';
+import { ComponentType } from './message.list.container';
 
-export const UserList: React.FunctionComponent<ComponentType> = props => {
+export const MessageList: React.FunctionComponent<ComponentType> = props => {
 
   const handleDisplayUser = (e: any, id: number) => {
-    props.displayUser(id);
+    /**props.displayUser(id);*/
   }
 
   const handleRemoveUser = (e: any, id: number) => {
-    props.removeUser(id);
+    /**props.removeUser(id);*/
   }
 
   const { classes } = props;
@@ -21,21 +21,21 @@ export const UserList: React.FunctionComponent<ComponentType> = props => {
     <Paper className={classes.paper}>
       <List dense={false}>
         {
-          props.users ? props.users.map(
-            user => (
+          props.messages ? props.messages.map(
+            message => (
               <ListItem
-                key={user.id}
-                selected={props.selectedUserId!==-1 && props.selectedUserId===user.id}
+                key={message.id}
+                selected={props.selectedMessageId!==-1 && props.selectedMessageId===message.id}
               >
                 <ListItemAvatar>
                   <Avatar src="/broken-image.jpg" />
                 </ListItemAvatar>
                   <ListItemText
-                    primary={user.id+' '+user.firstname+' '+user.lastname+' '+user.email} 
-                    onClick={(e) => handleDisplayUser(e, user.id)} />
+                    primary={message.id+' '+message.time+' '+message.description} 
+                    onClick={(e) => handleDisplayUser(e, message.id)} />
                   <ListItemSecondaryAction>
                     <IconButton edge="end" aria-label="delete"
-                    onClick={(e) => handleRemoveUser(e, user.id)}                    
+                    onClick={(e) => handleRemoveUser(e, message.id)}                    
                     >
                       <DeleteIcon />
                     </IconButton>

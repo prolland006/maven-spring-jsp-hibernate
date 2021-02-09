@@ -4,9 +4,9 @@ import Button from '@material-ui/core/Button';
 import { Grid, Paper, TextField } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import { FeedbackMessage, CreateUserFeedbackType } from '../model';
-import { UserComponentType } from '../App';
+import { ComponentType } from './user.container';
 
-export const User: React.FunctionComponent<UserComponentType> = props => {
+export const User: React.FunctionComponent<ComponentType> = props => {
 
   const handleSearchUser = () => {
     props.searchUser(props.user);

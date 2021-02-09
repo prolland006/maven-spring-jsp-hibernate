@@ -7,8 +7,22 @@ interface IUser {
   age: number,
 }
 
+interface IMessage {
+  id: number,
+  description: string,
+  time: Date|null,
+}
+
 type GlobalState = {
 	userState: UserState,
+	messageState: MessageState,
+}
+
+type MessageState = {
+  message: IMessage,
+  messages: IMessage[],
+  feedback: FeedbackCreateMessage.FeedbackMessage,
+  selectedMessageId: number,
 }
 
 type UserState = {
