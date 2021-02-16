@@ -8,6 +8,7 @@ const initialState: UserState = {
     id: -1,
     email: '',
     address: '',
+    company: '',
     age: -1,
   },
   users: [],
@@ -24,13 +25,10 @@ const userReducer = (
 ): UserState => {
 	switch (action.type) {
       case actionTypes.ALL_USERS_RECEIVED:
+        console.log('id:'+action.payload.id+' msg:'+action.payload.message);
         return {
           ...state, 
           users: action.payload.users, 
-          feedback:  {
-            id: action.payload.id,
-            message: action.payload.message,
-          },
           selectedUserId: -1,
         };
       case actionTypes.GET_USER_OK:

@@ -6,11 +6,12 @@
   <session-factory>
     <!-- Database connection settings -->
     <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
-    <property name="connection.url">jdbc:mysql://localhost:3306/bookstore?allowPublicKeyRetrieval=true&amp;useSSL=false</property>
+    <property name="connection.url">jdbc:mysql://localhost:3306/bookstore?allowPublicKeyRetrieval=true&amp;useSSL=false&amp;useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC</property>
     <property name="connection.username">patrice</property>
     <property name="connection.password">pancake</property>
     <property name="show_sql">true</property>
     <property name="hibernate.hbm2ddl.auto">update</property>
+    <property name="dialect">org.hibernate.dialect.MySQL8Dialect</property>
     <!-- Disable the second-level cache -->
     <property name="cache.provider_class">org.hibernate.cache.internal.NoCacheProvider</property>
     <mapping class="com.example.demo.entities.User" />

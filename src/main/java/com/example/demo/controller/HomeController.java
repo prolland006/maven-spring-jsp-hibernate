@@ -112,6 +112,7 @@ public class HomeController {
     		@RequestParam(value="age", required=true) int age,
     		@RequestParam(value="address", required=false, defaultValue = "") String address,
     		@RequestParam(value="pays", required=false, defaultValue = "france") String pays,
+    		@RequestParam(value="company", required=false) String company,
     		final RedirectAttributes redirectAttributes) {
     	
     	User user = new User();
@@ -120,6 +121,7 @@ public class HomeController {
     	user.setAge(age);
     	user.setPays(pays);
     	user.setAddress(address);
+    	user.setCompany(company);
     	
 		logger.info("saveOrUpdateUser - " + user.toString());
 

@@ -40,6 +40,12 @@ export const User: React.FunctionComponent<ComponentType> = props => {
         address: e.target.value
     });
   }
+  const handleChangeCompany = (e: any) => {
+    props.updateUser({
+      ...props.user,
+        company: e.target.value
+    });
+  }
   const getAlertMessage = (feedback: FeedbackMessage) => {
     switch (feedback.id) {
       case CreateUserFeedbackType.USER_CREATED_SUCCESSFULLY :
@@ -105,6 +111,14 @@ export const User: React.FunctionComponent<ComponentType> = props => {
               label="address" 
               value={props.user.address || ''}
               onChange={handleChangeAddress}
+            />
+          </div>
+          <div>
+            <TextField 
+              id="standard-basic" 
+              label="company" 
+              value={props.user.company || ''}
+              onChange={handleChangeCompany}
             />
           </div>
           <div>

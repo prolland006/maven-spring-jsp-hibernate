@@ -5,6 +5,7 @@ interface IUser {
   email: string,
   address: string,
   age: number,
+  company: string,
 }
 
 interface IMessage {

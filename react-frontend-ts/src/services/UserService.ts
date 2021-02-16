@@ -26,6 +26,7 @@ class UserService {
             age: user.age,
             address: user.address,
             pays: 'france',
+            company: user.company,
         });
     }
 
@@ -53,6 +54,7 @@ class UserService {
             firstname: user.firstname,
             lastname: user.lastname,
             address: user.address,
+            company: user.company,
         });
     }
 }
