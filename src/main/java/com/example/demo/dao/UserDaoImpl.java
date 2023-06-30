@@ -2,6 +2,7 @@ package com.example.demo.dao;
 
 import java.util.List;
 
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -21,7 +22,6 @@ import com.example.demo.entities.User;
 
 @Repository
 public class UserDaoImpl implements UserDao  {
-
 	/**
 	 * Create a user
 	 * @return true if user created, false if user already exist or error
@@ -230,10 +230,18 @@ public class UserDaoImpl implements UserDao  {
 			.configure()
 			.build();
 
-			if(this.getUserId(user.getId()) == null){
+			User oldUser = this.getUserId(user.getId());
+			if(oldUser == null){
 				return false;
 			}
 
+			try{
+				getUser(user);
+			} catch(NonUniqueResultException e){
+				if (!(user.getFirstname().equals((oldUser.getFirstname()))&&user.getLastname().equals(oldUser.getLastname()))){
+					throw e;
+				}
+			}
 			SessionFactory sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
 			Session session = sessionFactory.openSession();
 

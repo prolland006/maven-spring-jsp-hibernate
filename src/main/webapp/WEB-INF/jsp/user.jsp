@@ -35,7 +35,7 @@
                     </div>
                 </spring:bind>
 
-                <spring:bind path="address">
+                <spring:bind path="dfdsfsdfsdf">
                     <div class="form-group ${status.error ? 'has-error' : ''}">
                         <label class="col-sm-2 control-label">address</label>
                         <div class="col-sm-10">
@@ -59,7 +59,7 @@
                     <div class="form-group ${status.error ? 'has-error' : ''}">
                         <label class="col-sm-2 control-label">company</label>
                         <div class="col-sm-10">
-                            <form:input path="company" type="text" class="form-control" idcompanypays" placeholder="company" />
+                            <form:input path="company" type="text" class="form-control" id="company" placeholder="company" />
                             <form:errors path="company" class="control-label" />
                         </div>
                     </div>

@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.NonUniqueResultException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
@@ -13,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -57,6 +59,35 @@ public class HomeController {
 
         model.addAttribute("user", user);
         return new ModelAndView("user", "command", user);
+    }
+
+	/**
+     * Display the update user page : user.jsp
+     * @param model
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
+    public ModelAndView getUpdate(Model model, @ModelAttribute("update") @PathVariable("id") int id) {
+        model.addAttribute("update");
+		try
+		{
+			User user = userService.getUserId(id);
+			ModelAndView mvUpdate = new ModelAndView("update", "command", user);
+			mvUpdate.addObject("id", user.getId());
+			mvUpdate.addObject("firstname", user.getFirstname());
+			mvUpdate.addObject("lastname", user.getLastname());
+			mvUpdate.addObject("address", user.getAddress());
+			mvUpdate.addObject("pays", user.getPays());
+			mvUpdate.addObject("company", user.getCompany());
+			mvUpdate.addObject("age", user.getAge());
+			return mvUpdate;
+		}
+		catch (Exception e) {
+			ModelAndView mvUpdate = new ModelAndView("update", "error", e.getMessage());
+			e.printStackTrace();
+			return mvUpdate;
+		}
     }
     
     @GetMapping("users")
@@ -166,6 +197,73 @@ public class HomeController {
     	}
 
         return new ModelAndView("redirect:/user/");
+
+    }
+
+	/**
+     * Update a user if the user id already exists. If the user id doesn't exist send a flash attribute
+     * @param action
+     * @param firstname
+     * @param lastname
+     * @param age
+     * @param address
+     * @param pays
+     * @param redirectAttributes
+     * @return
+     */
+    @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
+    public ModelAndView postUpdate(
+			@PathVariable(value="id",required=true) int id, 
+    		@RequestParam(value="firstname", required=true) String firstname,
+    		@RequestParam(value="lastname", required=true) String lastname,
+    		@RequestParam(value="age", required=true) int age,
+    		@RequestParam(value="address", required=false, defaultValue = "") String address,
+    		@RequestParam(value="pays", required=false, defaultValue = "france") String pays,
+    		@RequestParam(value="company", required=false) String company,
+    		final RedirectAttributes redirectAttributes) {
+    	
+    	User user = new User();
+		user.setId(id);
+    	user.setFirstname(firstname);
+    	user.setLastname(lastname);
+    	user.setAge(age);
+    	user.setPays(pays);
+    	user.setAddress(address);
+    	user.setCompany(company);
+
+		try {
+			
+			// update the user
+    	    if (!userService.updateUser(user)) {
+    	    	redirectAttributes.addFlashAttribute("msg", "User id doesn't exist!");
+    	    } else {
+    	    	redirectAttributes.addFlashAttribute("user", user);
+                redirectAttributes.addFlashAttribute("msg", "User updated successfully!");
+    	    }
+    	    
+    	    
+		} catch (ConstraintViolationException e) {
+			
+			// check for mandatory fields, if mandatory fields display messages on update page
+			StringBuffer msg = new StringBuffer();
+            for (ConstraintViolation<?> con : e.getConstraintViolations()) {
+            	msg.append(con.getMessage());
+            	msg.append(". ");
+            }
+			redirectAttributes.addFlashAttribute("msg", msg);
+            redirectAttributes.addFlashAttribute("user", user);
+            
+    	}catch (NonUniqueResultException e){
+			StringBuffer msg = new StringBuffer();
+            	msg.append(e.getMessage());
+            	msg.append(". ");
+			redirectAttributes.addFlashAttribute("msg", msg);
+            redirectAttributes.addFlashAttribute("user", user);
+		} catch (Exception ex) {
+    	    ex.printStackTrace();
+    	}
+
+        return new ModelAndView("redirect:/update/"+id);
 
     }
     
