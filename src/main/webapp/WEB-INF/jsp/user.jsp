@@ -55,6 +55,16 @@
                     </div>
                 </spring:bind>
 
+                <spring:bind path="company">
+                    <div class="form-group ${status.error ? 'has-error' : ''}">
+                        <label class="col-sm-2 control-label">company</label>
+                        <div class="col-sm-10">
+                            <form:input path="company" type="text" class="form-control" idcompanypays" placeholder="company" />
+                            <form:errors path="company" class="control-label" />
+                        </div>
+                    </div>
+                </spring:bind>
+
                 <spring:bind path="age">
                     <div class="form-group ${status.error ? 'has-error' : ''}">
                         <label class="col-sm-2 control-label">age</label>

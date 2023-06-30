@@ -218,4 +218,29 @@ public class UserDaoImpl implements UserDao  {
 		}
     	return users;
 	}
+
+	/***
+	 * updates an existing user using their id to identify them
+	 * @param user
+	 * @return true if the user has been successfully updated and false if the user does not exist or there is an error
+	 * @throws Exception
+	 */
+	public Boolean updateUser(User user) throws Exception{
+		final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+			.configure()
+			.build();
+
+			if(this.getUserId(user.getId()) == null){
+				return false;
+			}
+
+			SessionFactory sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
+			Session session = sessionFactory.openSession();
+
+			session.beginTransaction();
+			session.update(user);
+			session.getTransaction().commit();
+			session.close();
+			return true;
+	}
 }

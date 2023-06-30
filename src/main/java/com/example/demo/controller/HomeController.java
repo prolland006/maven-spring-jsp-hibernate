@@ -25,6 +25,7 @@ import com.example.demo.controller.restmessage.CreateUserResult;
 import com.example.demo.controller.restmessage.GetMessageResult;
 import com.example.demo.controller.restmessage.GetUserResult;
 import com.example.demo.controller.restmessage.RemoveUserResult;
+import com.example.demo.controller.restmessage.UpdateUserResult;
 import com.example.demo.entities.User;
 import com.example.demo.service.MessageService;
 import com.example.demo.service.UserService;
@@ -328,6 +329,44 @@ public class HomeController {
     	    result.setMessage(ex.getMessage());
     	} 
         return result;
-    }	    
+    }
+	
+	/****
+	 * update at user using their id
+	 * @param user the user with their updated properties and their user id
+	 * @return
+	 */
+	@RequestMapping(value = "/updateuser", method = RequestMethod.POST)
+	public UpdateUserResult updateUser(@RequestBody User user){
+
+		UpdateUserResult result = new UpdateUserResult();
+
+		try {
+			if(!userService.updateUser(user)){
+				result.setId(UpdateUserResult.ID_NOT_FOUND);
+				result.setMessage("User Id Not Found");
+			}
+			else{
+				result.setId(UpdateUserResult.USER_UPDATED_SUCCESSFULLY);
+				result.setMessage("User Updated Successfully");
+			}
+		} catch (ConstraintViolationException e) {
+			result.setId(UpdateUserResult.CONSTRAINT_VIOLATION);
+			StringBuffer msg = new StringBuffer();
+            for (ConstraintViolation<?> con : e.getConstraintViolations()) {
+            	msg.append(con.getMessage());
+            	msg.append(". ");
+            }
+			result.setMessage("User Updated Successfully");
+			result.setMessage(msg.toString());
+		}
+		catch(Exception ex){
+			ex.printStackTrace();
+    	    result.setId(CreateUserResult.ERROR);
+    	    result.setMessage(ex.getMessage());
+		}
+
+		return result;
+	}
     
 }

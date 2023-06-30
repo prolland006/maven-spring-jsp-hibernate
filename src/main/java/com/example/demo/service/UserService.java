@@ -38,6 +38,16 @@ public class UserService {
 	public boolean createUser(User user) throws Exception {
 	    return userDao.createUser(user);
 	}
+
+	/***
+	 * updates an existing user using their id to identify them
+	 * @param user
+	 * @return true if the user has been successfully updated and false if the user does not exist or there is an error
+	 * @throws Exception
+	 */
+	public Boolean updateUser(User user) throws Exception{
+		return userDao.updateUser(user);
+	}
 	
 	/**
 	 * get a user thanks to firstname and lastname
