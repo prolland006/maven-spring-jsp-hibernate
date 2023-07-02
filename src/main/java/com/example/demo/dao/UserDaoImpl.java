@@ -9,6 +9,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import org.hibernate.Criteria;
+import org.hibernate.NonUniqueResultException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
@@ -21,7 +22,6 @@ import com.example.demo.entities.User;
 
 @Repository
 public class UserDaoImpl implements UserDao  {
-
 	/**
 	 * Create a user
 	 * @return true if user created, false if user already exist or error
@@ -217,5 +217,37 @@ public class UserDaoImpl implements UserDao  {
 		    throw ex;
 		}
     	return users;
+	}
+
+	/***
+	 * updates an existing user using their id to identify them
+	 * @param user
+	 * @return true if the user has been successfully updated and false if the user does not exist or there if another user with the same full name already exists
+	 * @throws Exception
+	 */
+	public Boolean updateUser(User user) throws Exception{
+		final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+			.configure()
+			.build();
+
+			User oldUser = this.getUserId(user.getId());
+			if(oldUser == null){
+				return false;
+			}
+
+			//	check if a user with this full name and is not the user being updated already exists
+			User dupeCheckUser = this.getUser(user);
+			if (dupeCheckUser !=null && dupeCheckUser.getId() != user.getId()){
+				throw new Exception("Another user with this full name already exists!");
+			}
+
+			SessionFactory sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
+			Session session = sessionFactory.openSession();
+
+			session.beginTransaction();
+			session.update(user);
+			session.getTransaction().commit();
+			session.close();
+			return true;
 	}
 }

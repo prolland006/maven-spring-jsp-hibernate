@@ -7,12 +7,14 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
 import org.apache.log4j.Logger;
+import org.hibernate.NonUniqueResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,6 +27,7 @@ import com.example.demo.controller.restmessage.CreateUserResult;
 import com.example.demo.controller.restmessage.GetMessageResult;
 import com.example.demo.controller.restmessage.GetUserResult;
 import com.example.demo.controller.restmessage.RemoveUserResult;
+import com.example.demo.controller.restmessage.UpdateUserResult;
 import com.example.demo.entities.User;
 import com.example.demo.service.MessageService;
 import com.example.demo.service.UserService;
@@ -94,7 +97,7 @@ public class HomeController {
     }
 
     /**
-     * Create a user if not exist or find a user. If the user exist send a flash attribute
+     * Create a user if not exist or find a user. If the user exist send a flash attribute or update the user.
      * @param action
      * @param firstname
      * @param lastname
@@ -107,6 +110,7 @@ public class HomeController {
     @RequestMapping(value = "/postuser", method = RequestMethod.POST)
     public ModelAndView postUser(
     		@RequestParam String action, 
+			@RequestParam(value="id", required = false) Integer id,
     		@RequestParam(value="firstname", required=true) String firstname,
     		@RequestParam(value="lastname", required=true) String lastname,
     		@RequestParam(value="age", required=true) int age,
@@ -137,7 +141,7 @@ public class HomeController {
     	    	}
     	    	
     	    // find the user
-    	    } else {
+    	    } else if  (action.equals("display")) {
     	    	 
                 User userFound = userService.getUser(user);
                  
@@ -147,7 +151,24 @@ public class HomeController {
                 } else {
                 	redirectAttributes.addFlashAttribute("msg", "User not found !");
                 }
-    	    }
+    	    } else {
+				user.setId(id);
+				// update the user
+    	    	try{
+					if (!userService.updateUser(user)) {
+    	    		redirectAttributes.addFlashAttribute("msg", "User id doesn't exist!");
+    	    		} else {
+    	    			redirectAttributes.addFlashAttribute("user", user);
+            		    redirectAttributes.addFlashAttribute("msg", "User updated successfully!");
+    	    		}
+				}
+				catch (ConstraintViolationException e){
+					throw e;
+				} catch(Exception e){
+					redirectAttributes.addFlashAttribute("msg", e.getMessage());
+					redirectAttributes.addFlashAttribute("user", user);
+				}
+			}
     	    
 		} catch (ConstraintViolationException e) {
 			
@@ -328,6 +349,44 @@ public class HomeController {
     	    result.setMessage(ex.getMessage());
     	} 
         return result;
-    }	    
+    }
+	
+	/****
+	 * update at user using their id
+	 * @param user the user with their updated properties and their user id
+	 * @return
+	 */
+	@RequestMapping(value = "/updateuser", method = RequestMethod.POST)
+	public UpdateUserResult updateUser(@RequestBody User user){
+
+		UpdateUserResult result = new UpdateUserResult();
+
+		try {
+			if(!userService.updateUser(user)){
+				result.setId(UpdateUserResult.ID_NOT_FOUND);
+				result.setMessage("User Id Not Found");
+			}
+			else{
+				result.setId(UpdateUserResult.USER_UPDATED_SUCCESSFULLY);
+				result.setMessage("User Updated Successfully");
+			}
+		} catch (ConstraintViolationException e) {
+			result.setId(UpdateUserResult.CONSTRAINT_VIOLATION);
+			StringBuffer msg = new StringBuffer();
+            for (ConstraintViolation<?> con : e.getConstraintViolations()) {
+            	msg.append(con.getMessage());
+            	msg.append(". ");
+            }
+			result.setMessage("User Updated Successfully");
+			result.setMessage(msg.toString());
+		}
+		catch(Exception ex){
+			ex.printStackTrace();
+    	    result.setId(CreateUserResult.ERROR);
+    	    result.setMessage(ex.getMessage());
+		}
+
+		return result;
+	}
     
 }

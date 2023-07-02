@@ -51,4 +51,12 @@ public interface UserDao {
 	 * @throws Exception
 	 */
 	public List<User> findUser(User user) throws Exception;
+
+	/***
+	 * updates an existing user using their id to identify them
+	 * @param user
+	 * @return true if the user has been successfully updated and false if the user does not exist or there is an error
+	 * @throws Exception
+	 */
+	public Boolean updateUser(User user) throws Exception;
 }

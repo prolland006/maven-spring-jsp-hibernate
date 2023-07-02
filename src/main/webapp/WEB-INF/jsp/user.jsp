@@ -1,6 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
 <t:base>
     <jsp:attribute name="myscript">
 
@@ -14,7 +15,17 @@
 						<strong>${msg}</strong>
 		    		</div>
 				</c:if>
-
+                <c:if test="${user.id > 0}">
+                    <spring:bind path="id">
+                        <div class="form-group ${status.error ? 'has-error' : ''}">
+                            <label class="col-sm-2 control-label">id</label>
+                            <div class="col-sm-10">
+                                <form:input path="id" type="text" class="form-control" readonly="true" id="id" placeholder="id" />
+                                <form:errors path="id" class="control-label" />
+                            </div>
+                        </div>
+                    </spring:bind>
+                </c:if>
                 <spring:bind path="firstname">
                     <div class="form-group ${status.error ? 'has-error' : ''}">
                         <label class="col-sm-2 control-label">firstname</label>
@@ -55,6 +66,16 @@
                     </div>
                 </spring:bind>
 
+                <spring:bind path="company">
+                    <div class="form-group ${status.error ? 'has-error' : ''}">
+                        <label class="col-sm-2 control-label">company</label>
+                        <div class="col-sm-10">
+                            <form:input path="company" type="text" class="form-control" id="company" placeholder="company" />
+                            <form:errors path="company" class="control-label" />
+                        </div>
+                    </div>
+                </spring:bind>
+
                 <spring:bind path="age">
                     <div class="form-group ${status.error ? 'has-error' : ''}">
                         <label class="col-sm-2 control-label">age</label>
@@ -72,10 +93,17 @@
                     <div class="col-sm-offset-2 col-sm-10">
                         <button type="submit" name="action" value="display" class="btn-lg btn-primary pull-right">Display user</button>
                     </div>
+                    <c:if test="${user.id > 0}">
+                        <div>
+                            <button type="submit" name="action" value="update" class="btn-lg btn-primary pull-right">Update user</button>
+                        </div>
+                    </c:if>
                 </div>
             </form:form>
+            
 
         </div>
+        
     </jsp:body>
 
 </t:base>
