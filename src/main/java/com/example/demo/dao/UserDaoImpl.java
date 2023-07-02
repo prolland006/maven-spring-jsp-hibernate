@@ -2,7 +2,6 @@ package com.example.demo.dao;
 
 import java.util.List;
 
-import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -10,6 +9,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import org.hibernate.Criteria;
+import org.hibernate.NonUniqueResultException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
@@ -222,7 +222,7 @@ public class UserDaoImpl implements UserDao  {
 	/***
 	 * updates an existing user using their id to identify them
 	 * @param user
-	 * @return true if the user has been successfully updated and false if the user does not exist or there is an error
+	 * @return true if the user has been successfully updated and false if the user does not exist or there if another user with the same full name already exists
 	 * @throws Exception
 	 */
 	public Boolean updateUser(User user) throws Exception{
@@ -235,13 +235,12 @@ public class UserDaoImpl implements UserDao  {
 				return false;
 			}
 
-			try{
-				getUser(user);
-			} catch(NonUniqueResultException e){
-				if (!(user.getFirstname().equals((oldUser.getFirstname()))&&user.getLastname().equals(oldUser.getLastname()))){
-					throw e;
-				}
+			//	check if a user with this full name and is not the user being updated already exists
+			User dupeCheckUser = this.getUser(user);
+			if (dupeCheckUser !=null && dupeCheckUser.getId() != user.getId()){
+				throw new Exception("Another user with this full name already exists!");
 			}
+
 			SessionFactory sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
 			Session session = sessionFactory.openSession();
 

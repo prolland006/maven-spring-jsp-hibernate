@@ -3,11 +3,11 @@ package com.example.demo.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.NonUniqueResultException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
 import org.apache.log4j.Logger;
+import org.hibernate.NonUniqueResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
@@ -253,14 +253,9 @@ public class HomeController {
 			redirectAttributes.addFlashAttribute("msg", msg);
             redirectAttributes.addFlashAttribute("user", user);
             
-    	}catch (NonUniqueResultException e){
-			StringBuffer msg = new StringBuffer();
-            	msg.append(e.getMessage());
-            	msg.append(". ");
-			redirectAttributes.addFlashAttribute("msg", msg);
-            redirectAttributes.addFlashAttribute("user", user);
-		} catch (Exception ex) {
-    	    ex.printStackTrace();
+    	}catch (Exception ex) {
+    	    redirectAttributes.addFlashAttribute("msg", ex.getMessage());
+			redirectAttributes.addFlashAttribute("user", user);
     	}
 
         return new ModelAndView("redirect:/update/"+id);
